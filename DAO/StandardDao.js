@@ -3,12 +3,15 @@ import { DbHelper } from "../Utils/DbHelper";
 
 class StandardDAO{
     
-
     dbName;
+
+    constructor(tbName){
+        this.dbName = tbName;
+    }
 
     async Get(Id) {
 
-        connection = await DbHelper.GetConnection();
+        const connection = await DbHelper.GetConnection();
 
         const register = await connection.getAsync("select * from " + this.dbName  + " where Id = ?", [Id]);
        
@@ -26,7 +29,7 @@ class StandardDAO{
 
     async GetAll(){
 
-        connection = await DbHelper.GetConnection();
+        const connection = await DbHelper.GetConnection();
 
         const register = await connection.getAsync("select * from " + this.dbName);
        
@@ -43,16 +46,26 @@ class StandardDAO{
     }
 
 
-    async Insert(){
-
+    async Insert(model){
+        return null;
     }
 
-    async Update(){
-
+    async Update(model){
+        return null
     }
 
     async Delete(Id){
-        const query = "delete from " + this.dbName  + " where Id = " + Id;
+        
+        const connection = await DbHelper.GetConnection();
+
+
+        const query = "delete from " + this.dbName  + " where Id = ?";
+
+        const result = await connection.runAsync(query, [Id]);
+
+        await connection.closeAsync();
+
+        return result.changes == 1;
 
     }
 
