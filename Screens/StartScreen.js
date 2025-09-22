@@ -5,10 +5,10 @@ export default function StartScreen({ navigation }) {
   return (
     <View >
       <TouchableOpacity>
-        <text>Jogar</text>
+        <Text>Jogar</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <text>Criar</text>
+        <Text>Criar</Text>
       </TouchableOpacity>
     </View>
   );
