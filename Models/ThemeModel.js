@@ -16,7 +16,7 @@ class ThemeModel extends StandardModel{
     set name(name){
         if(name === null || name === undefined || name === "") throw new Error("Nome está vazio")
             
-        return name;
+        return this.#name;
     }
 
 }

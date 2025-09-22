@@ -8,11 +8,11 @@ export class ThemeDao extends StandardDAO{
         super("tbAnswer");
     }
 
-    async Update(model){
+    async Insert(model){
         
-        connection = DbHelper.GetConnection();
+        const connection = await DbHelper.GetConnection();
 
-        query = "insert into " + dbName + " (text, right, questionId) values(?,?,?)  "
+        const query = "insert into " + this.dbName + " (text, right, questionId) values(?,?,?)  "
 
         const result = await connection.execAsync(query, [model.text, model.right, model.questionId])
 
@@ -23,9 +23,9 @@ export class ThemeDao extends StandardDAO{
 
     async Update(model){
         
-        connection = DbHelper.GetConnection();
+        const connection = await DbHelper.GetConnection();
 
-        query = "update " + dbName + " set text = ?, right = ?  where id = ?"
+        const query = "update " + this.dbName + " set text = ?, right = ?  where id = ?"
 
         const result = await connection.execAsync(query, [model.text, model.right ,model.id])
 

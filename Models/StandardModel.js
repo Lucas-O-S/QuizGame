@@ -3,7 +3,6 @@
 class StandardModel{
 
     #id;
-    
 
     constructor(id = ""){
         this.#id = id;    
@@ -14,7 +13,7 @@ class StandardModel{
     }
 
     set id(id){
-        if(Number.isNaN(id)) throw new Error("Id não é um numero");
+        if(Number.isNaN(Number(id))) throw new Error("Id não é um numero");
 
         this.#id = id;
         
