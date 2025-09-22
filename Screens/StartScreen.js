@@ -4,7 +4,12 @@ import { View, Text, TouchableOpacity } from "react-native";
 export default function StartScreen({ navigation }) {
   return (
     <View >
-     
+      <TouchableOpacity>
+        <text>Jogar</text>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <text>Criar</text>
+      </TouchableOpacity>
     </View>
   );
 }
