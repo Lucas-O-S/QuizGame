@@ -21,11 +21,13 @@ export default function CreatorChooseScreen({navigation}){
     }
 
 
-    useFocusEffect(
-        useCallback(async () => {
-            await RetriveThemes();
-        },[])
-
+   useFocusEffect(
+    useCallback(() => {
+        async function fetchThemes() {
+        await RetriveThemes();
+        }
+        fetchThemes();
+    }, [])
     );
 
     return(

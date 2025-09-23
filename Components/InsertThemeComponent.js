@@ -11,8 +11,8 @@ export default function InsertThemeComponent({ visible, onClose }) {
   async function saveNewTheme(){
     const result = await themeControler.Create(themeName);
     console.log(result);
+    alert("Salvo com sucesso")
     if (result === true) {
-      alert("Salvo com sucesso")
       setThemeName("")
       onClose();
     };
