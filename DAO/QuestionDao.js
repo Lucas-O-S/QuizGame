@@ -1,5 +1,7 @@
 
 import { DbHelper } from "../Utils/DbHelper";
+import StandardDAO from "./StandardDao";
+
 
 export class ThemeDao extends StandardDAO{
     

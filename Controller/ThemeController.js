@@ -1,8 +1,8 @@
 
-import { Alert } from "react-native";
-import { ThemeService } from "../Service/ThemeService";
+import { alert } from "react-native";
+import  ThemeService  from "../Service/ThemeService";
 
-export class ThemeControler{
+export default class ThemeControler{
 
     #service
 
@@ -16,10 +16,11 @@ export class ThemeControler{
             themeList = await this.#service.GetAll();
 
             return themeList;
+            
         }
         catch(error){
             
-            Alert("Erro ao obter temas: " + error.message);       
+            alert("Erro ao obter temas: " + error.message);       
 
         }
     }

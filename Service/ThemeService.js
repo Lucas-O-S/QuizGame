@@ -1,8 +1,8 @@
 
 import ThemeModel from "../Models/ThemeModel"
-import ThemeDao from "../DAO/ThemeDao"
+import { ThemeDao } from "../DAO/ThemeDao"
 
-export class ThemeService{
+export default class ThemeService{
 
     #dao;
 

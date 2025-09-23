@@ -1,8 +1,7 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
-import { TouchableOpacity } from "react-native";
-import { ThemeControler } from "../Controller/ThemeController";
-import { ScrollView } from "react-native/types_generated/index";
+import { useCallback, useState } from "react";
+import  ThemeControler  from "../Controller/ThemeController";
+import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 
 
 
@@ -21,8 +20,8 @@ export default function CreatorChooseScreen({navigation}){
 
 
     useFocusEffect(
-        useCallback(async () => {
-            await RetriveThemes();
+        useCallback(() => {
+            RetriveThemes();
         },[])
 
     );

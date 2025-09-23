@@ -73,3 +73,5 @@ class StandardDAO{
 
 
 }
+
+export default StandardDAO;

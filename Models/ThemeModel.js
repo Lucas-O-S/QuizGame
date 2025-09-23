@@ -1,12 +1,12 @@
+import StandardModel from "./StandardModel"
 
-
-class ThemeModel extends StandardModel{
+export default class ThemeModel extends StandardModel{
 
     #name;
 
     constructor(id = "", name = ""){
         super(id);
-        this.#name = name
+        this.name = name
     }
 
     get name(){
@@ -16,7 +16,7 @@ class ThemeModel extends StandardModel{
     set name(name){
         if(name === null || name === undefined || name === "") throw new Error("Nome está vazio")
             
-        return this.#name;
+        this.#name = name;
     }
 
 }

@@ -1,11 +1,9 @@
-
-
 class StandardModel{
 
     #id;
 
     constructor(id = ""){
-        this.#id = id;    
+        this.id = id;    
     }
 
     get id() {
@@ -13,10 +11,15 @@ class StandardModel{
     }
 
     set id(id){
-        if(Number.isNaN(Number(id))) throw new Error("Id não é um numero");
 
-        this.#id = id;
+        if(Number.isNaN(Number(id))) throw new Error("Id não é um numero");
+        
+        if (value === null || value === undefined || value === "") throw new Error("Id inválido");
+
+        this.#id = Number(id);
         
     }
 
 }
+
+export default StandardModel
