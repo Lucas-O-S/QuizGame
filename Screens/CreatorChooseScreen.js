@@ -21,8 +21,8 @@ export default function CreatorChooseScreen({navigation}){
 
 
     useFocusEffect(
-        useCallback(() => {
-
+        useCallback(async () => {
+            await RetriveThemes();
         },[])
 
     );
