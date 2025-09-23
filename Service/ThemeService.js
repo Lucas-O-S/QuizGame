@@ -29,25 +29,28 @@ export default class ThemeService{
 
         const registers = await this.#dao.GetAll();
 
+        
         let models = [];
-
+        
         for(const register of registers){
             
             const model = new ThemeModel(register.id, register.name);
 
-
             models.push(model);
 
         }
+        
+        return models;
 
     }
 
     async Insert(model){
-
         const result = this.#dao.Insert(model);
+        console.log(result);
 
         if(!result) throw new console.error("Náo foi possivel adicionar o Tema");
 
+        return result == 1;
 
     }
 
@@ -57,11 +60,15 @@ export default class ThemeService{
 
         if(!result) throw new console.error("Náo foi possivel atualizar o Tema");
 
+        return result == 1;
+
     }
 
-    async Delete(Id){
+    async Delete(id){
 
         const result = this.#dao.Delete(id);
+
+        return result == 1;
 
     }
     

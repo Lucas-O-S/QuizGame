@@ -1,6 +1,7 @@
 
-import { alert } from "react-native";
+import { Alert } from "react-native";
 import  ThemeService  from "../Service/ThemeService";
+import ThemeModel from "../Models/ThemeModel";
 
 export default class ThemeControler{
 
@@ -13,14 +14,33 @@ export default class ThemeControler{
     async GetAll(){
         try{
             
-            themeList = await this.#service.GetAll();
+            const themeList = await this.#service.GetAll();
 
-            return themeList;
+            console.log(themeList);
+
+            return themeList || [];
             
         }
         catch(error){
             
-            alert("Erro ao obter temas: " + error.message);       
+            Alert("Erro ao obter temas: " + error.message);       
+
+        }
+    }
+
+    async Create(themeName){
+        try{
+            
+            const model = new ThemeModel("", themeName);
+            
+            result = await this.#service.Insert(model);
+
+            return true;
+
+        }
+        catch(error){
+            
+            Alert("Erro ao Criar tema: " + error.message);       
 
         }
     }

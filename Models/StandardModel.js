@@ -2,8 +2,8 @@ class StandardModel{
 
     #id;
 
-    constructor(id = ""){
-        this.id = id;    
+    constructor(id = ''){
+        this.#id = id;    
     }
 
     get id() {

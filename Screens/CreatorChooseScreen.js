@@ -16,14 +16,14 @@ export default function CreatorChooseScreen({navigation}){
 
 
     async function RetriveThemes(){
-        list = await themeControler.GetAll()
+        const list = await themeControler.GetAll()
         setThemeList(list)
     }
 
 
     useFocusEffect(
-        useCallback(() => {
-            RetriveThemes();
+        useCallback(async () => {
+            await RetriveThemes();
         },[])
 
     );

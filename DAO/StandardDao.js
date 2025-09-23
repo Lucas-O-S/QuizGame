@@ -26,24 +26,13 @@ class StandardDAO{
         }
 
     }
-
     async GetAll(){
-
         const connection = await DbHelper.GetConnection();
-
-        const register = await connection.allAsync("select * from " + this.dbName);
-       
+        const registers = await connection.getAllAsync("SELECT * FROM " + this.dbName);
         await connection.closeAsync();
-
-        if(register){
-            return register;
-
-        }
-        else{
-            return null
-        }
-
+        return registers && registers.length > 0 ? registers : null;
     }
+
 
 
     async Insert(model){
@@ -54,19 +43,13 @@ class StandardDAO{
         return null
     }
 
+
     async Delete(Id){
-        
         const connection = await DbHelper.GetConnection();
-
-
-        const query = "delete from " + this.dbName  + " where Id = ?";
-
+        const query = "DELETE FROM " + this.dbName + " WHERE id = ?";
         const result = await connection.runAsync(query, [Id]);
-
         await connection.closeAsync();
-
-        return result.changes == 1;
-
+        return result.changes === 1;
     }
 
 
