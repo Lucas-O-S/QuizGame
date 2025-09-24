@@ -16,6 +16,9 @@ export default class ThemeControler{
             
             const themeList = await this.#service.GetAll();
 
+
+            console.log(themeList.length);
+
             return themeList || [];
             
         }
@@ -46,13 +49,13 @@ export default class ThemeControler{
         }
     }
 
-    async Update(theme){
+    async Update(model){
         try{
-            
-            const model = new ThemeModel(theme.id, theme.name);
-            console.log(model.id)
+
+
             await this.#service.Update(model);
-            
+            console.log(model.id)
+
 
             return true;
 

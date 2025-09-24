@@ -13,7 +13,7 @@ export default function CreatorChooseScreen({ navigation }) {
 
   async function RetriveThemes() {
     const list = await themeControler.GetAll();
-    setThemeList(list);
+    setThemeList(list ?? []);
   }
 
   useFocusEffect(
@@ -56,10 +56,10 @@ export default function CreatorChooseScreen({ navigation }) {
       />
 
       <ScrollView>
-        {themeList.length > 0 ? (
+        {  themeList.length > 0 ? (
           themeList.map((theme) => (
             <View key={theme.id} style={{ marginBottom: 15 }}>
-              <TouchableOpacity onPress={() => {        console.log(theme.id)}}>
+              <TouchableOpacity onPress={() => navigation.navigate("ChooseQuestionEditorScreen", {theme})}>
                 <Text style={{ fontSize: 18 }}>{theme.name }</Text>
               </TouchableOpacity>
 

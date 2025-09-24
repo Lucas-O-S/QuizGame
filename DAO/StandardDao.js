@@ -29,8 +29,9 @@ class StandardDAO{
     async GetAll(){
         const connection = await DbHelper.GetConnection();
         const registers = await connection.getAllAsync("SELECT * FROM " + this.dbName);
+        
         await connection.closeAsync();
-        return registers && registers.length > 0 ? registers : null;
+        return registers && registers.length > 0 ? registers : [];
     }
 
 
