@@ -4,11 +4,14 @@ class AnswerModel extends StandardModel {
     
     #text;
     #right;
+    #questionId
 
     // C
-    constructor(text = 0, right = false) {
+    constructor(id = null, text = "", right = false, questionId = null ) {
+        super(id)
         this.#text = text;
         this.#right = right;
+        this.#questionId = questionId;
     }
 
     // Getters
@@ -30,5 +33,18 @@ class AnswerModel extends StandardModel {
 
     set right(value) {
         this.#right = !!value;
+    }
+
+    get questionId(){
+        return this.#questionId;
+    }
+
+    set questionId(questionId){
+        
+        if(Number.isNaN(Number(id))) throw new Error("Id não é um numero");
+        
+        if (value === null || value === undefined || value === "") throw new Error("Id inválido");
+
+        this.#questionId = Number(questionId);
     }
 }

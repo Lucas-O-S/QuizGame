@@ -1,18 +1,20 @@
-
+import { useFocusEffect } from "@react-navigation/native";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
+import QuestionController from "../Controller/QuestionController";
+import { useCallback, useState } from "react";
 
 export default function ChooseQuestionEditorScreen({ navigation, route }) {
 
-    const {theme} = route.params;
-    
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingTheme, setEditingTheme] = useState(null);
 
-  const themeControler = new ThemeControler();
+  const [questionlist, setQuestionList] = useState([])
+
+  const {theme} = route.params;
+    
+  const questionController = new QuestionController();
 
   async function RetriveThemes() {
-    const list = await themeControler.GetAll();
-    setThemeList(list ?? []);
+    const list = await questionController.GetAll();
+    setQuestionList(list ?? []);
   }
 
   useFocusEffect(
@@ -24,56 +26,32 @@ export default function ChooseQuestionEditorScreen({ navigation, route }) {
     }, [])
   );
 
-  function openCreateModal() {
-    setEditingTheme(null);       // criando um novo tema
-    setModalVisible(true);
-  }
-
-  function openEditModal(theme) {
-    setEditingTheme(theme);      // editando tema existente
-    setModalVisible(true);
-  }
 
   return (
     <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, marginBottom: 10 }}>Choose One</Text>
+      <Text style={{ fontSize: 24, marginBottom: 10 }}>Escolha uma Questão</Text>
 
-      <TouchableOpacity onPress={openCreateModal} style={{ marginBottom: 20 }}>
-        <Text style={{ fontSize: 18, color: 'blue' }}>+ Novo Tema</Text>
+      <TouchableOpacity onPress={ console.log("Coloca a proxima tela")} style={{ marginBottom: 20 }}>
+        <Text style={{ fontSize: 18, color: 'blue' }}>+ Nova Questão</Text>
       </TouchableOpacity>
 
-      <InsertThemeComponent
-        visible={modalVisible}
-        editingTheme={editingTheme}
-        onClose={() => {
-          setModalVisible(false);
-          setEditingTheme(null);
-        }}
-        onSaveSuccess={async () => {
-          await RetriveThemes();
-        }}
-      />
-
       <ScrollView>
-        {  themeList.length > 0 ? (
-          themeList.map((theme) => (
-            <View key={theme.id} style={{ marginBottom: 15 }}>
-              <TouchableOpacity onPress={() => navigation.navigate("ChooseQuestionEditorScreen", {theme})}>
-                <Text style={{ fontSize: 18 }}>{theme.name }</Text>
+        {questionlist.length > 0 ? (
+          questionlist.map((question) => (
+            <View key={question.id} style={{ marginBottom: 15 }}>
+              <TouchableOpacity onPress={() => {}}>
+                <Text style={{ fontSize: 18 }}>{question.name }</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 onPress={async () => {
-                  await themeControler.Delete(theme.id);
+                  await questionController.Delete(question.id);
                   await RetriveThemes();
                 }}
               >
                 <Text style={{ color: 'red' }}>Delete</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => openEditModal(theme)}>
-                <Text style={{ color: 'green' }}>Rename</Text>
-              </TouchableOpacity>
             </View>
           ))
         ) : (

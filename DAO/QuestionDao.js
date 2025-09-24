@@ -36,6 +36,24 @@ export class ThemeDao extends StandardDAO{
         return result == 1;
     }
 
+    async GetByThemeId(ThemeId) {
+
+        const connection = await DbHelper.GetConnection();
+
+        const register = await connection.getAsync("select * from " + this.dbName  + " where ThemeId = ?", [ThemeId]);
+        
+        await connection.closeAsync();
+
+        if(register){
+            return register;
+
+        }
+        else{
+            return null
+        }
+
+    }
+
 
 
 }

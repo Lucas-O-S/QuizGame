@@ -15,7 +15,7 @@ export default class QuestionService{
             
             if(!register) throw new error("Não foi encontrado no banco");
             
-            const model = new QuestionModel(register.id, register.questionText, register.img, register.themeId);
+            const model = new QuestionModel(register.id, register.questionText, register.img, register.questionId);
     
             return model;
     
@@ -63,6 +63,19 @@ export default class QuestionService{
     
             return result == 1;
     
+        }
+
+        async GetByThemeId(themeId){
+
+            const register = await this.#dao.GetByThemeId(themeId);
+            
+            if(!register) throw new error("Não foi encontrado no banco");
+            
+            const model = new QuestionModel(register.id, register.questionText, register.img, register.themeId);
+    
+            return model;
+    
+
         }
 
 
