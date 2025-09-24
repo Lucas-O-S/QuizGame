@@ -16,14 +16,12 @@ export default class ThemeControler{
             
             const themeList = await this.#service.GetAll();
 
-            console.log(themeList);
-
             return themeList || [];
             
         }
         catch(error){
             
-            Alert("Erro ao obter temas: " + error.message);       
+            alert("Erro ao obter temas: " + error.message);       
 
         }
     }
@@ -32,17 +30,49 @@ export default class ThemeControler{
         try{
             
             const model = new ThemeModel("", themeName);
+                    console.log("asdf")
+
+            await this.#service.Insert(model);
             
-            result = await this.#service.Insert(model);
+            console.log("asdf")
 
             return true;
 
         }
         catch(error){
             
-            Alert("Erro ao Criar tema: " + error.message);       
+            alert("Erro ao Criar tema: " + error.message);       
 
         }
+    }
+
+    async Update(theme){
+        try{
+            
+            const model = new ThemeModel(theme.id, theme.name);
+            console.log(model.id)
+            await this.#service.Update(model);
+            
+
+            return true;
+
+        }
+        catch(error){
+            
+            alert("Erro ao atualizar tema: " + error.message);       
+
+        }
+    }
+
+    async Delete(id){
+        try{
+            await this.#service.Delete(id)
+        }
+        catch(error){
+            alert("Erro ao deletar: " + error)
+        }
+        
+        
     }
 
 

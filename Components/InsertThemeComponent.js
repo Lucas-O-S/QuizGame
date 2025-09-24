@@ -1,57 +1,56 @@
-import { useCallback, useState } from "react";
-import { Modal, View, Text, TouchableOpacity,TextInput } from 'react-native';
-import  ThemeControler  from "../Controller/ThemeController";
+import { useEffect, useState } from "react";
+import { Modal, View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
+import ThemeControler from "../Controller/ThemeController";
 
-export default function InsertThemeComponent({ visible, onClose }) {
-  
+export default function InsertThemeComponent({ visible, onClose, onSaveSuccess, editingTheme }) {
   const [themeName, setThemeName] = useState("");
-  
   const themeControler = new ThemeControler();
 
-  async function saveNewTheme(){
-    const result = await themeControler.Create(themeName);
-    console.log(result);
-    alert("Salvo com sucesso")
+  useEffect(() => {
+    if (visible) {
+      setThemeName(editingTheme?.name || "");
+    }
+  }, [visible, editingTheme]);
+
+  async function saveNewTheme() {
+    let result = false;
+
+    if (editingTheme) {
+      result = await themeControler.Update({
+        ...editingTheme,
+        name: themeName,
+      });
+    } else {
+      result = await themeControler.Create(themeName);
+    }
+
     if (result === true) {
-      setThemeName("")
+      Alert.alert("Salvo com sucesso");
+      setThemeName("");
+      onSaveSuccess?.();
       onClose();
-    };
-    console.log("Não foi");
+    }
   }
 
-  return (
+ return (
     <Modal animationType="slide" transparent={true} visible={visible}>
       <View style={{ flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'#000000aa' }}>
         <View style={{ backgroundColor:'white', padding:20, borderRadius:10 }}>
-          <Text>Crie um novo tema</Text>
-          
-          <View>
+          <Text>{editingTheme ? "Renomear Tema" : "Criar Novo Tema"}</Text>
 
-            <Text>Nome</Text>
+          <Text>Nome</Text>
+          <TextInput
+            value={themeName}
+            onChangeText={setThemeName}
+          />
 
-            <TextInput
-              value = {themeName}
-              onChangeText = {setThemeName}
-            />
+          <TouchableOpacity onPress={onClose}>
+            <Text>Fechar</Text>
+          </TouchableOpacity>
 
-          </View>
-
-          <View>
-            <TouchableOpacity 
-              onPress={() => onClose()}
-            >
-              <Text>Fechar</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
-              onPress={() => saveNewTheme()}
-            >
-              <Text>Salvar</Text>
-            </TouchableOpacity>
-            
-
-          </View>
-
+          <TouchableOpacity onPress={saveNewTheme}>
+            <Text>Salvar</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>

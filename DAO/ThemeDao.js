@@ -20,14 +20,12 @@ export class ThemeDao extends StandardDAO{
         
         await connection.closeAsync();
         
-        console.log(result.changes);
         return result.changes == 1;
     }
 
     async Update(model){
         
         const connection = await DbHelper.GetConnection();
-
         const query = "update " + this.dbName + " set name = ? where id = ?"
 
         const result = await connection.runAsync(query, [model.name,model.id])

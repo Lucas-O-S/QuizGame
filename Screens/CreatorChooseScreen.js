@@ -1,59 +1,86 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
-import  ThemeControler  from "../Controller/ThemeController";
+import ThemeControler from "../Controller/ThemeController";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import InsertThemeComponent from "../Components/InsertThemeComponent.js";
 
+export default function CreatorChooseScreen({ navigation }) {
+  const [themeList, setThemeList] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [editingTheme, setEditingTheme] = useState(null);
 
+  const themeControler = new ThemeControler();
 
-export default function CreatorChooseScreen({navigation}){
+  async function RetriveThemes() {
+    const list = await themeControler.GetAll();
+    setThemeList(list);
+  }
 
-    const [themeList, setThemeList] = useState([]);
-
-    const themeControler = new ThemeControler();
-    
-    const [modalVisible, setModalVisible] = useState(false);
-
-
-    async function RetriveThemes(){
-        const list = await themeControler.GetAll()
-        setThemeList(list)
-    }
-
-
-   useFocusEffect(
+  useFocusEffect(
     useCallback(() => {
-        async function fetchThemes() {
+      async function fetchThemes() {
         await RetriveThemes();
-        }
-        fetchThemes();
+      }
+      fetchThemes();
     }, [])
-    );
+  );
 
-    return(
-        <View>
-            <Text>Choose One</Text>
-            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <Text>+</Text>
-            </TouchableOpacity>
+  function openCreateModal() {
+    setEditingTheme(null);       // criando um novo tema
+    setModalVisible(true);
+  }
 
-            <InsertThemeComponent
-                visible={modalVisible}
-                onClose={() => setModalVisible(false)}
-            />
+  function openEditModal(theme) {
+    setEditingTheme(theme);      // editando tema existente
+    setModalVisible(true);
+  }
 
-            <ScrollView>
-                {themeList.length > 0 ? (
-                    themeList.map((theme) => (
-                        <TouchableOpacity key={theme.id}>
-                            <Text>{theme.name}</Text>
-                        </TouchableOpacity>
-                    ))
-                ) : (
-                    <Text>Nenhum tema encontrado</Text>
-                )}
-            </ScrollView>
-        </View>
+  return (
+    <View style={{ padding: 20 }}>
+      <Text style={{ fontSize: 24, marginBottom: 10 }}>Choose One</Text>
 
-    )
+      <TouchableOpacity onPress={openCreateModal} style={{ marginBottom: 20 }}>
+        <Text style={{ fontSize: 18, color: 'blue' }}>+ Novo Tema</Text>
+      </TouchableOpacity>
+
+      <InsertThemeComponent
+        visible={modalVisible}
+        editingTheme={editingTheme}
+        onClose={() => {
+          setModalVisible(false);
+          setEditingTheme(null);
+        }}
+        onSaveSuccess={async () => {
+          await RetriveThemes();
+        }}
+      />
+
+      <ScrollView>
+        {themeList.length > 0 ? (
+          themeList.map((theme) => (
+            <View key={theme.id} style={{ marginBottom: 15 }}>
+              <TouchableOpacity onPress={() => {        console.log(theme.id)}}>
+                <Text style={{ fontSize: 18 }}>{theme.name }</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={async () => {
+                  await themeControler.Delete(theme.id);
+                  await RetriveThemes();
+                }}
+              >
+                <Text style={{ color: 'red' }}>Delete</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => openEditModal(theme)}>
+                <Text style={{ color: 'green' }}>Rename</Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        ) : (
+          <Text>Nenhum tema encontrado</Text>
+        )}
+      </ScrollView>
+    </View>
+  );
 }

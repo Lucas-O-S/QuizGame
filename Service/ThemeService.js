@@ -46,12 +46,7 @@ export default class ThemeService{
 
     async Insert(model){
         const result = this.#dao.Insert(model);
-        console.log(result);
-
         if(!result) throw new console.error("Náo foi possivel adicionar o Tema");
-
-        return result == 1;
-
     }
 
     async Update(model){
