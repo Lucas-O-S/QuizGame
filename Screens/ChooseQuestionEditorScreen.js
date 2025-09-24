@@ -31,7 +31,7 @@ export default function ChooseQuestionEditorScreen({ navigation, route }) {
     <View style={{ padding: 20 }}>
       <Text style={{ fontSize: 24, marginBottom: 10 }}>Escolha uma Questão</Text>
 
-      <TouchableOpacity onPress={ console.log("Coloca a proxima tela")} style={{ marginBottom: 20 }}>
+      <TouchableOpacity onPress={ () => navigation.navigate("EditQuestionScreen", {}) } style={{ marginBottom: 20 }}>
         <Text style={{ fontSize: 18, color: 'blue' }}>+ Nova Questão</Text>
       </TouchableOpacity>
 

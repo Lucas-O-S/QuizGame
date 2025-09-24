@@ -1,15 +1,14 @@
 import {QuestionDao as AnswerDao} from "../DAO/AnswerDao"
 import AnswerModel from "../Models/AnswerModel"
 
-export default class QuestionService{
+export default class AnswerService{
 
     #dao;
 
-    QuestionService(){
-        this.#dao = new AnswerDao;
+    constructor(){
+        this.#dao = new AnswerDao();
     }
 
-    
     async Get (id) {
         const register = await this.#dao.Get(id);
         

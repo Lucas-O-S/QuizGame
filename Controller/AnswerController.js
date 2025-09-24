@@ -1,11 +1,11 @@
-import QuestionService from "../Service/QuestionService";
+import ThemeService from "../Service/ThemeService";
 
-export default class QuestionController{
+export default class AnswerController{
     
     #service
 
     constructor(){
-        this.#service = new QuestionService();
+        this.#service = new ThemeService();
     }
 
     async GetAll(){
@@ -77,7 +77,7 @@ export default class QuestionController{
 
 
     async GetByThemeId(themeId){
-
+        
     }
 
 

@@ -1,6 +1,7 @@
+import StandardModel from "./StandardModel"
 
 
-class AnswerModel extends StandardModel {
+export default class AnswerModel extends StandardModel {
     
     #text;
     #right;

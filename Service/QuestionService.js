@@ -1,12 +1,12 @@
-import {QuestionDao} from "../DAO/QuestionDao"
 import QuestionModel from "../Models/QuestionModel"
+import {QuestionDao} from "../DAO/QuestionDao"
 
 export default class QuestionService{
 
     #dao;
 
-    QuestionService(){
-        this.#dao = new QuestionDao;
+    constructor(){
+        this.#dao = new QuestionDao();
     }
 
     
@@ -24,9 +24,8 @@ export default class QuestionService{
         }
     
         async GetAll(){
-    
+            
             const registers = await this.#dao.GetAll();
-    
             
             let models = [];
             
@@ -37,7 +36,6 @@ export default class QuestionService{
                 models.push(model);
     
             }
-            
             return models;
     
         }

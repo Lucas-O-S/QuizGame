@@ -1,6 +1,7 @@
 import { decode as atob, encode as btoa } from 'base-64';
+import StandardModel from "./StandardModel"
 
-class QuestionModel extends StandardModel{
+export default class QuestionModel extends StandardModel{
 
     #text;
     #imgByte;
