@@ -5,12 +5,17 @@ class QuestionModel extends StandardModel{
     #text;
     #imgByte;
     #imgString;
+    #themeId;
 
     // Construtor
-    constructor(text = 0, imgByte = null, imgString = null){
+    constructor(id = null, text = "", imgByte = null, themeId = null){
+        
+        super(id);
+
         this.#text = text;
         this.#imgByte = imgByte;
         this.#imgString = imgString;
+        this.#themeId = themeId;
 
         // Sincroniza imgByte e imgString se apenas uma for passada
         if (this.#imgByte && !this.#imgString) {
@@ -40,6 +45,19 @@ class QuestionModel extends StandardModel{
             throw new Error('text deve ser um número inteiro')
         }
         this.#text = value;
+    }
+
+    get themeId(){
+        return this.#themeId;
+    }
+
+    set themeId(themeId){
+        
+        if(Number.isNaN(Number(themeId))) throw new Error("Id não é um numero");
+        
+        if (value === null || value === undefined || value === "") throw new Error("Id inválido");
+
+        this.#themeId = Number(themeId);
     }
 
     set imgByte(bytes) {
@@ -101,4 +119,6 @@ class QuestionModel extends StandardModel{
         const base64 = btoa(binary);
         return includePrefix ? `data:${mime};base64,${base64}` : base64;
     }
+
+
 }
