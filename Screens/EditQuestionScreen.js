@@ -1,35 +1,38 @@
 import { useFocusEffect } from "@react-navigation/native";
-import {
-  ScrollView,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  StyleSheet,
-} from "react-native";
+import {ScrollView,Text,TouchableOpacity,TextInput,Image,StyleSheet,} from "react-native";
 import QuestionController from "../Controller/QuestionController";
 import { useCallback, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { RadioButton } from "react-native-paper";
 import AnswerEditor from "../Components/AnswerEditor";
+import AnswerControler from "../Controller/AnswerController";
 
 export default function EditQuestionScreen({ navigation, route }) {
   const questionController = new QuestionController();
+  const answerControler = new AnswerControler();
 
+  ///A questao a mudar
   const [questionName, setQuestionName] = useState("");
+
+  //A imagem a salvar
   const [imageUri, setImageUri] = useState(null);
 
-  const [answer1, setAnswer1] = useState("");
-  const [answer2, setAnswer2] = useState("");
-  const [answer3, setAnswer3] = useState("");
-  const [answer4, setAnswer4] = useState("");
+  ///Muda as resposta para salvar
+  const [answer1, setAnswer1] = useState(new answer());
+  const [answer2, setAnswer2] = useState(new answer());
+  const [answer3, setAnswer3] = useState(new answer());
+  const [answer4, setAnswer4] = useState(new answer());
 
-  const [answerTrue, setAnswerTrue] = useState("");
-  const [answerFalse, setAnswerFalse] = useState("");
+  const [answerTrue, setAnswerTrue] = useState(new answer());
+  const [answerFalse, setAnswerFalse] = useState(new answer());
 
-  const [editingAnswer, setEditingAnswer] = useState(null);
+  ///Resposta temporaria
+  const [editingAnswer, setEditingAnswer] = useState(new answer());
+
+  //Qual o estado da radio box
   const [checked, setChecked] = useState("alternativa");
+
+  //Ativa a modal
   const [modalVisible, setModalVisible] = useState(false);
 
   useFocusEffect(
@@ -38,7 +41,8 @@ export default function EditQuestionScreen({ navigation, route }) {
     }, [])
   );
 
-  const handleSelectImage = async () => {
+  //Parte relacionada a imagem da questão
+  async function handleSelectImage(){
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
       alert("Permissão para acessar a galeria foi negada.");
@@ -61,44 +65,52 @@ export default function EditQuestionScreen({ navigation, route }) {
     setModalVisible(true);
   };
 
-  const renderAlternatives = () => {
+
+  //Rederiza alternativas
+  function renderAlternatives(){
     const answers = [
-      { key: "answer1", label: "A", value: answer1, setter: setAnswer1 },
-      { key: "answer2", label: "B", value: answer2, setter: setAnswer2 },
-      { key: "answer3", label: "C", value: answer3, setter: setAnswer3 },
-      { key: "answer4", label: "D", value: answer4, setter: setAnswer4 },
+      { key: "answer1", label: answer1.text, value: answer1, setter: setAnswer1 },
+      { key: "answer2", label: answer2.text, value: answer2, setter: setAnswer2 },
+      { key: "answer3", label: answer3.text, value: answer3, setter: setAnswer3 },
+      { key: "answer4", label: answer4.text, value: answer4, setter: setAnswer4 },
     ];
 
-    return answers.map((ans, i) => (
+    return answers.map((answer, i) => (
       <TouchableOpacity
-        key={ans.key}
+        key={answer.key}
         style={styles.answerBox}
-        onPress={() => openEditModal(ans.key)}
+        onPress={() => openEditModal(answer.key)}
       >
-        <Text style={styles.answerLabel}>{ans.label}:</Text>
-        <Text style={styles.answerText}>{ans.value || "Toque para editar"}</Text>
+        <Text style={styles.answerLabel}>{answer.label}:</Text>
+        <Text style={styles.answerText}>{answer.value || "Toque para editar"}</Text>
       </TouchableOpacity>
     ));
   };
 
-  const renderTrueFalse = () => {
+  //Renderiza verdadeiro ou false
+  function renderTrueFalse() {
     const answers = [
       { key: "answerTrue", label: "Verdadeiro", value: answerTrue, setter: setAnswerTrue },
       { key: "answerFalse", label: "Falso", value: answerFalse, setter: setAnswerFalse },
     ];
 
-    return answers.map((ans) => (
+    return answers.map((answer) => (
       <TouchableOpacity
-        key={ans.key}
+        key={answer.key}
         style={styles.answerBox}
-        onPress={() => openEditModal(ans.key)}
+        onPress={() => openEditModal(answer.key)}
       >
-        <Text style={styles.answerLabel}>{ans.label}:</Text>
-        <Text style={styles.answerText}>{ans.value || "Toque para editar"}</Text>
+        <Text style={styles.answerLabel}>{answer.label}:</Text>
+        <Text style={styles.answerText}>{answer.value || "Toque para editar"}</Text>
       </TouchableOpacity>
     ));
   };
 
+  async function save(){
+    await questionController.Ins
+  }
+
+  ///Tela principal
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TextInput
@@ -134,22 +146,40 @@ export default function EditQuestionScreen({ navigation, route }) {
       {/* Modal de edição de resposta */}
       <AnswerEditor
         visible={modalVisible}
+
+        //libera para edita
         editingAnswer={editingAnswer}
+
+        //Fecha
         onClose={() => setModalVisible(false)}
-        onSaveSuccess={(updatedText) => {
-          if (editingAnswer === "answer1") setAnswer1(updatedText);
-          if (editingAnswer === "answer2") setAnswer2(updatedText);
-          if (editingAnswer === "answer3") setAnswer3(updatedText);
-          if (editingAnswer === "answer4") setAnswer4(updatedText);
-          if (editingAnswer === "answerTrue") setAnswerTrue(updatedText);
-          if (editingAnswer === "answerFalse") setAnswerFalse(updatedText);
+        
+        ///escolhe em qual lugar salvar o que mudou
+        onSaveSuccess={(answer) => {
+          if (editingAnswer === "answer1") setAnswer1(answer);
+          else if (editingAnswer === "answer2") setAnswer2(answer);
+          else if (editingAnswer === "answer3") setAnswer3(answer);
+          else if (editingAnswer === "answer4") setAnswer4(answer);
+          else if (editingAnswer === "answerTrue") setAnswerTrue(answer);
+          else if (editingAnswer === "answerFalse") setAnswerFalse(answer);
           setModalVisible(false);
         }}
+
       />
 
       <View style={styles.answersContainer}>
         {checked === "alternativa" ? renderAlternatives() : renderTrueFalse()}
       </View>
+
+      <View>
+        <TouchableOpacity
+          //onPress={}
+        >
+          <Text>Salvar</Text>
+        </TouchableOpacity>
+
+      </View>
+
+
     </ScrollView>
   );
 }

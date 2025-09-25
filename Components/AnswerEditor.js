@@ -1,43 +1,28 @@
 import { useEffect, useState } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Alert,
-  StyleSheet,
-} from "react-native";
+import {Modal,View,Text,TouchableOpacity,TextInput,Alert,StyleSheet} from "react-native";
 import { Checkbox } from "react-native-paper";
 
-export default function AnswerEditor({
-  visible,
-  onClose,
-  onSaveSuccess,
-  editingAnswer,
-}) {
+export default function AnswerEditor({visible, onClose, onSaveSuccess, editingAnswer,}) {
+
   const [answerText, setAnswerText] = useState("");
+  
   const [right, setRight] = useState(false);
 
   useEffect(() => {
     if (visible && editingAnswer) {
-      // Se estiver editando, carregar o conteúdo da resposta
       setAnswerText(editingAnswer.text || "");
+
       setRight(editingAnswer.right || false);
+
     } else if (visible) {
-      // Se for nova resposta
+
       setAnswerText("");
       setRight(false);
+
     }
   }, [visible, editingAnswer]);
 
   const saveNewAnswer = () => {
-    if (!answerText.trim()) {
-      Alert.alert("Erro", "A resposta não pode ser vazia.");
-      return;
-    }
-
-    // Envia os dados para o componente pai
     if (onSaveSuccess) {
       onSaveSuccess({
         text: answerText,

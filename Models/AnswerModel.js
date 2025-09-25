@@ -8,7 +8,7 @@ export default class AnswerModel extends StandardModel {
     #questionId
 
     // C
-    constructor(id = null, text = "", right = false, questionId = null ) {
+    constructor(id = null, text = "", right = false, questionId = null) {
         super(id)
         this.#text = text;
         this.#right = right;

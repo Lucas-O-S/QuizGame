@@ -1,4 +1,5 @@
 import ThemeService from "../Service/ThemeService";
+import AnswerModel from "../Models/AnswerModel"
 
 export default class AnswerController{
     
@@ -11,12 +12,12 @@ export default class AnswerController{
     async GetAll(){
         try{
             
-            const themeList = await this.#service.GetAll();
+            const answerList = await this.#service.GetAll();
 
 
-            console.log(themeList.length);
+            console.log(answerList.length);
 
-            return themeList || [];
+            return answerList || [];
             
         }
         catch(error){
@@ -26,11 +27,9 @@ export default class AnswerController{
         }
     }
 
-    async Create(themeName){
+    async Create(text, right, questionId){
         try{
-            
-            const model = new ThemeModel("", themeName);
-                    console.log("asdf")
+            const model = new AnswerModel(null, themeName);
 
             await this.#service.Insert(model);
             
@@ -48,12 +47,9 @@ export default class AnswerController{
 
     async Update(model){
         try{
-
-
             await this.#service.Update(model);
             console.log(model.id)
-
-
+            
             return true;
 
         }

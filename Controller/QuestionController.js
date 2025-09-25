@@ -26,7 +26,7 @@ export default class QuestionController{
         }
     }
 
-    async Create(themeName){
+    async Create(text, imgPicker, themeid){
         try{
             
             const model = new ThemeModel("", themeName);
