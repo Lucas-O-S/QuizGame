@@ -9,8 +9,9 @@ export default class QuestionService{
         this.#dao = new QuestionDao();
     }
 
-    
+
         async Get (id) {
+
             const register = await this.#dao.Get(id);
             
             if(!register) throw new error("Não foi encontrado no banco");
@@ -18,8 +19,6 @@ export default class QuestionService{
             const model = new QuestionModel(register.id, register.questionText, register.img, register.questionId);
     
             return model;
-    
-    
     
         }
     
@@ -41,7 +40,13 @@ export default class QuestionService{
         }
     
         async Insert(model){
-            const result = this.#dao.Insert(model);
+            console.log("Model a salvar:", {
+                text: model.text,
+                img: model.imgString?.substring(0,30), 
+                themeId: model.themeId,
+                type: model.type
+            });
+            const result = await this.#dao.Insert(model);
 
             if(!result) throw new console.error("Náo foi possivel adicionar o Tema");
 

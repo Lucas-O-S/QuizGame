@@ -8,6 +8,7 @@ export default function StartScreen({ navigation }) {
         <Text>Jogar</Text>
       </TouchableOpacity>
       <TouchableOpacity
+      
         onPress={() => navigation.navigate("CreatorChooseScreen")}
       >
         <Text>Criar</Text>

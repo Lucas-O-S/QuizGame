@@ -12,15 +12,17 @@ export class QuestionDao extends StandardDAO{
 
     async Insert(model){
         
+        console.log(model.text)
+
         const connection = await DbHelper.GetConnection();
         
-        const query = "insert into " + this.dbName + " (questionText, img, ThemeId) values(?,?,?)";
+        const query = "insert into " + this.dbName + " (questionText, img, ThemeId, type) values(?,?,?,?)";
         
-        const result = await connection.execAsync(query, [model.text, model.imgByte, model.themeId]);
-        
+        const result = await connection.runAsync(query, [ model.text, model.imgByte, model.themeId, model.type]);
+
         await connection.closeAsync();
 
-        return result.lastInsertId;
+        return result.lastInsertRowId;
     }
 
     async Update(model){

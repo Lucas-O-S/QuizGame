@@ -21,13 +21,16 @@ export default class QuestionController{
         }
     }
 
-    async Create(text, img64, themeId, type){
+    async Insert(text, img64, themeId, type){
         try{
-            const model = new QuestionModel("", text, null, img64, themeId, type);
+            console.log("AAAA")
+            const model = new QuestionModel(null, text, null, img64, themeId, type);
+
             const result = await this.#service.Insert(model);
             return result;
         }
         catch(error){
+            console.log("Erro ao criar questão: ", error);
             alert("Erro ao criar questão: " + error.message);
             return null;
         }

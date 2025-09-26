@@ -10,13 +10,14 @@ export default class QuestionModel extends StandardModel{
     #type;
 
     // Construtor
-    constructor(id = null, text = "", imgByte = null, imgString = null, themeId = null, type = "alternativa") {
+    constructor(id = null, text = "", imgByte = null, imgString = null, themeId, type = "alternativa") {
         super(id);
         this.#text = text;
         this.#imgByte = imgByte;
         this.#imgString = imgString;
         this.#themeId = themeId;
         this.#type = type;
+
         // Sincroniza imgByte e imgString se apenas uma for passada
         if (this.#imgByte && !this.#imgString) {
             this.#imgString = QuestionModel.bytesToBase64(this.#imgByte);

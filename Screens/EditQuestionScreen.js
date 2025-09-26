@@ -13,6 +13,8 @@ export default function EditQuestionScreen({ navigation, route }) {
   const questionController = new QuestionController();
   const answerControler = new AnswerControler();
 
+  const {theme} = route.params ?? null;
+
   ///A questao a mudar
   const [questionName, setQuestionName] = useState("");
 
@@ -70,7 +72,7 @@ export default function EditQuestionScreen({ navigation, route }) {
       });
 
       //Armazena em outro state, ex:
-      setImageBase64(base64Image); // novo state que você vai criar abaixo
+      setImageBase64(base64Image); 
     }
   };
 
@@ -133,15 +135,14 @@ export default function EditQuestionScreen({ navigation, route }) {
 
   // Função para salvar questão e respostas
   async function save() {
-    const themeId = route?.params?.theme?.id;
     if (!questionName) {
       alert("Preencha a pergunta");
       return;
     }
+
     // Usa QuestionModel.insert
     const type = checked;
-    await QuestionModel.insert({ text: questionName, imgString: imageBase64, themeId, type });
-  
+
     let answers = []
     let stop = false;
 
@@ -163,12 +164,17 @@ export default function EditQuestionScreen({ navigation, route }) {
 
     }
 
-    if(stop = true) alert("Deve haver apenas uma resposta certa");
+    if(stop) alert("Deve haver apenas uma resposta certa");
 
-    if(rightAnswerFound == false) alert("Deve haver uma resposta certa")
+    else if(rightAnswerFound) alert("Deve haver pelo menos uma resposta certa")
 
-    alert("Questão salva com sucesso!");
-    navigation.goBack();
+    else{
+      console.log(theme.id + " " + theme.text);
+      await questionController.Insert(questionName, imageBase64, theme.id, checked);
+      alert("Questão salva com sucesso!");
+      navigation.goBack();
+    }
+    
   }
 
   ///Tela principal

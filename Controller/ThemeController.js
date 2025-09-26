@@ -29,15 +29,13 @@ export default class ThemeControler{
         }
     }
 
-    async Create(themeName){
+    async Insert(themeName){
         try{
             
             const model = new ThemeModel("", themeName);
-                    console.log("asdf")
 
             await this.#service.Insert(model);
             
-            console.log("asdf")
 
             return true;
 

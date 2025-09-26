@@ -19,7 +19,7 @@ export default function InsertThemeComponent({ visible, onClose, onSaveSuccess, 
       editingTheme.name = themeName;
       result = await themeControler.Update(editingTheme);
     } else {
-      result = await themeControler.Create(themeName);
+      result = await themeControler.Insert(themeName);
     }
 
     if (result === true) {
