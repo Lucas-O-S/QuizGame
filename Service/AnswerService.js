@@ -42,18 +42,17 @@ export default class AnswerService{
     }
 
     async Insert(model){
-        const result = this.#dao.Insert(model);
-        if(!result) throw new console.error("Náo foi possivel adicionar o Tema");
+        // model deve conter o campo 'type'
+        const result = await this.#dao.Insert(model);
+        if(!result) throw new Error("Não foi possível adicionar a resposta");
+        return result;
     }
 
     async Update(model){
-
-        const result = this.#dao.Update(model)
-
-        if(!result) throw new console.error("Náo foi possivel atualizar o Tema");
-
+        // model deve conter o campo 'type'
+        const result = await this.#dao.Update(model);
+        if(!result) throw new Error("Não foi possível atualizar a resposta");
         return result == 1;
-
     }
     
     async Delete(id){

@@ -1,11 +1,13 @@
 import { useFocusEffect } from "@react-navigation/native";
-import {ScrollView,Text,TouchableOpacity,TextInput,Image,StyleSheet,} from "react-native";
+import {ScrollView,Text,TouchableOpacity,TextInput,Image,StyleSheet,View} from "react-native";
 import QuestionController from "../Controller/QuestionController";
 import { useCallback, useState } from "react";
 import * as ImagePicker from "expo-image-picker";
 import { RadioButton } from "react-native-paper";
 import AnswerEditor from "../Components/AnswerEditor";
 import AnswerControler from "../Controller/AnswerController";
+import AnswerModel from "../Models/AnswerModel";
+import * as FileSystem from "expo-file-system";
 
 export default function EditQuestionScreen({ navigation, route }) {
   const questionController = new QuestionController();
@@ -16,24 +18,27 @@ export default function EditQuestionScreen({ navigation, route }) {
 
   //A imagem a salvar
   const [imageUri, setImageUri] = useState(null);
+  const [imageBase64, setImageBase64] = useState(null);
 
   ///Muda as resposta para salvar
-  const [answer1, setAnswer1] = useState(new answer());
-  const [answer2, setAnswer2] = useState(new answer());
-  const [answer3, setAnswer3] = useState(new answer());
-  const [answer4, setAnswer4] = useState(new answer());
+  const [answer1, setAnswer1] = useState(new AnswerModel());
+  const [answer2, setAnswer2] = useState(new AnswerModel());
+  const [answer3, setAnswer3] = useState(new AnswerModel());
+  const [answer4, setAnswer4] = useState(new AnswerModel());
 
-  const [answerTrue, setAnswerTrue] = useState(new answer());
-  const [answerFalse, setAnswerFalse] = useState(new answer());
+  const [answerTrue, setAnswerTrue] = useState(new AnswerModel());
+  const [answerFalse, setAnswerFalse] = useState(new AnswerModel());
 
   ///Resposta temporaria
-  const [editingAnswer, setEditingAnswer] = useState(new answer());
+  const [editingAnswer, setEditingAnswer] = useState(new AnswerModel());
 
   //Qual o estado da radio box
   const [checked, setChecked] = useState("alternativa");
 
   //Ativa a modal
   const [modalVisible, setModalVisible] = useState(false);
+    // Qual resposta está sendo editada (chave)
+    const [editingKey, setEditingKey] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -48,21 +53,25 @@ export default function EditQuestionScreen({ navigation, route }) {
       alert("Permissão para acessar a galeria foi negada.");
       return;
     }
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
+      base64: false, // não pega aqui direto
     });
 
     if (!result.canceled && result.assets?.length > 0) {
-      setImageUri(result.assets[0].uri);
-    }
-  };
+      const selectedImage = result.assets[0];
+      setImageUri(selectedImage.uri); // Mostra a imagem
 
-  const openEditModal = (answerKey) => {
-    setEditingAnswer(answerKey);
-    setModalVisible(true);
+      //CONVERTE PARA BASE64
+      const base64Image = await FileSystem.readAsStringAsync(selectedImage.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      //Armazena em outro state, ex:
+      setImageBase64(base64Image); // novo state que você vai criar abaixo
+    }
   };
 
 
@@ -79,10 +88,10 @@ export default function EditQuestionScreen({ navigation, route }) {
       <TouchableOpacity
         key={answer.key}
         style={styles.answerBox}
-        onPress={() => openEditModal(answer.key)}
+          onPress={() => openEditModal(answer.key)}
       >
-        <Text style={styles.answerLabel}>{answer.label}:</Text>
-        <Text style={styles.answerText}>{answer.value || "Toque para editar"}</Text>
+        <Text style={styles.answerLabel}>{answer.label}</Text>
+          <Text style={styles.answerText}>{answer.value.text || "Toque para editar"}</Text>
       </TouchableOpacity>
     ));
   };
@@ -98,16 +107,68 @@ export default function EditQuestionScreen({ navigation, route }) {
       <TouchableOpacity
         key={answer.key}
         style={styles.answerBox}
-        onPress={() => openEditModal(answer.key)}
+          onPress={() => openEditModal(answer.key)}
       >
-        <Text style={styles.answerLabel}>{answer.label}:</Text>
-        <Text style={styles.answerText}>{answer.value || "Toque para editar"}</Text>
+        <Text style={styles.answerLabel}>{answer.label}</Text>
+          <Text style={styles.answerText}>{answer.value.text || "Toque para editar"}</Text>
       </TouchableOpacity>
     ));
   };
 
-  async function save(){
-    await questionController.Ins
+  // Abre modal de edição de resposta
+  function openEditModal(key) {
+    setEditingKey(key);
+    // Define o objeto de resposta a editar
+    switch (key) {
+      case "answer1": setEditingAnswer(answer1); break;
+      case "answer2": setEditingAnswer(answer2); break;
+      case "answer3": setEditingAnswer(answer3); break;
+      case "answer4": setEditingAnswer(answer4); break;
+      case "answerTrue": setEditingAnswer(answerTrue); break;
+      case "answerFalse": setEditingAnswer(answerFalse); break;
+      default: setEditingAnswer(new AnswerModel());
+    }
+    setModalVisible(true);
+  }
+
+  // Função para salvar questão e respostas
+  async function save() {
+    const themeId = route?.params?.theme?.id;
+    if (!questionName || !themeId) {
+      alert("Preencha a pergunta e selecione o tema.");
+      return;
+    }
+    // Usa QuestionModel.insert
+    const type = checked;
+    await QuestionModel.insert({ text: questionName, imgString: imageBase64, themeId, type });
+  
+    let answers = []
+    let stop;
+
+    // Salva as respostas
+    if (checked === "alternativa") {
+
+      answers = [answer1, answer2, answer3, answer4]
+
+    } else {
+      answers = [answerTrue, answerFalse]
+    }
+
+    let rightAnswerFound = false;
+
+    for(let answer in answers){
+      if(answer.right && !rightAnswerFound) rightAnswerFound = true;
+      
+      else if(answer.right && rightAnswerFound) stop = true;
+
+    }
+
+    if(stop = true) alert("Deve haver apenas uma resposta certa");
+
+    if(rightAnswerFound == false) alert("Deve haver uma resposta certa")
+
+    alert("Questão salva com sucesso!");
+    navigation.goBack();
   }
 
   ///Tela principal
@@ -146,21 +207,18 @@ export default function EditQuestionScreen({ navigation, route }) {
       {/* Modal de edição de resposta */}
       <AnswerEditor
         visible={modalVisible}
-
-        //libera para edita
         editingAnswer={editingAnswer}
-
-        //Fecha
         onClose={() => setModalVisible(false)}
-        
-        ///escolhe em qual lugar salvar o que mudou
         onSaveSuccess={(answer) => {
-          if (editingAnswer === "answer1") setAnswer1(answer);
-          else if (editingAnswer === "answer2") setAnswer2(answer);
-          else if (editingAnswer === "answer3") setAnswer3(answer);
-          else if (editingAnswer === "answer4") setAnswer4(answer);
-          else if (editingAnswer === "answerTrue") setAnswerTrue(answer);
-          else if (editingAnswer === "answerFalse") setAnswerFalse(answer);
+          switch (editingKey) {
+            case "answer1": setAnswer1(answer); break;
+            case "answer2": setAnswer2(answer); break;
+            case "answer3": setAnswer3(answer); break;
+            case "answer4": setAnswer4(answer); break;
+            case "answerTrue": setAnswerTrue(answer); break;
+            case "answerFalse": setAnswerFalse(answer); break;
+            default: break;
+          }
           setModalVisible(false);
         }}
 
@@ -172,7 +230,7 @@ export default function EditQuestionScreen({ navigation, route }) {
 
       <View>
         <TouchableOpacity
-          //onPress={}
+          onPress={save}
         >
           <Text>Salvar</Text>
         </TouchableOpacity>

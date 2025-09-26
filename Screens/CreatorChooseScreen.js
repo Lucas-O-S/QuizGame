@@ -5,6 +5,7 @@ import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import InsertThemeComponent from "../Components/InsertThemeComponent.js";
 
 export default function CreatorChooseScreen({ navigation }) {
+
   const [themeList, setThemeList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTheme, setEditingTheme] = useState(null);

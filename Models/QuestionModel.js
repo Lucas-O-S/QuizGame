@@ -7,17 +7,16 @@ export default class QuestionModel extends StandardModel{
     #imgByte;
     #imgString;
     #themeId;
+    #type;
 
     // Construtor
-    constructor(id = null, text = "", imgByte = null, themeId = null){
-        
+    constructor(id = null, text = "", imgByte = null, imgString = null, themeId = null, type = "alternativa") {
         super(id);
-
         this.#text = text;
         this.#imgByte = imgByte;
         this.#imgString = imgString;
         this.#themeId = themeId;
-
+        this.#type = type;
         // Sincroniza imgByte e imgString se apenas uma for passada
         if (this.#imgByte && !this.#imgString) {
             this.#imgString = QuestionModel.bytesToBase64(this.#imgByte);
@@ -25,8 +24,16 @@ export default class QuestionModel extends StandardModel{
             this.#imgByte = QuestionModel.base64ToBytes(this.#imgString);
         }
     }
+    get type() {
+        return this.#type;
+    }
+    set type(value) {
+        if (value !== "alternativa" && value !== "verdadeiroFalse") {
+            throw new Error("Tipo de questão inválido");
+        }
+        this.#type = value;
+    }
 
-    // Getters
     get text(){
         return this.#text
     }
@@ -40,23 +47,23 @@ export default class QuestionModel extends StandardModel{
     }
 
 
-    // Setters
-    set text(value){
-        if (typeof value !== 'number' || !Number.isInteger(value)) {
-            throw new Error('text deve ser um número inteiro')
+    set text(value) {
+        if (!value || typeof value !== 'string') {
+            throw new Error("Texto da pergunta inválido");
         }
         this.#text = value;
     }
-
     get themeId(){
         return this.#themeId;
     }
 
-    set themeId(themeId){
-        
-        if(Number.isNaN(Number(themeId))) throw new Error("Id não é um numero");
-        
-        if (value === null || value === undefined || value === "") throw new Error("Id inválido");
+    set themeId(themeId) {
+        if (themeId === null || themeId === undefined || themeId === "") {
+            throw new Error("Id inválido");
+        }
+        if (Number.isNaN(Number(themeId))) {
+            throw new Error("Id não é um número");
+        }
 
         this.#themeId = Number(themeId);
     }

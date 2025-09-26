@@ -35,6 +35,7 @@ export class DbHelper {
             id INTEGER PRIMARY KEY,
             answer TEXT NOT NULL,
             right INTEGER,
+            type TEXT NOT NULL,
             questionId INTEGER NOT NULL,
             FOREIGN KEY(questionId) REFERENCES tbQuestion(id)
         )`;

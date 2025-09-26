@@ -1,83 +1,58 @@
-import ThemeService from "../Service/ThemeService";
-import AnswerModel from "../Models/AnswerModel"
+import AnswerService from "../Service/AnswerService";
+import AnswerModel from "../Models/AnswerModel";
 
 export default class AnswerController{
-    
-    #service
+    #service;
 
     constructor(){
-        this.#service = new ThemeService();
+        this.#service = new AnswerService();
     }
 
     async GetAll(){
         try{
-            
             const answerList = await this.#service.GetAll();
-
-
             console.log(answerList.length);
-
             return answerList || [];
-            
         }
         catch(error){
-            
-            alert("Erro ao obter temas: " + error.message);       
-
+            alert("Erro ao obter respostas: " + error.message);
+            return [];
         }
     }
 
-    async Create(text, right, questionId){
+    async Create(text, right, type, questionId){
         try{
-            const model = new AnswerModel(null, themeName);
-
+            const model = new AnswerModel(null, text, right, type, questionId);
             await this.#service.Insert(model);
-            
-            console.log("asdf")
-
             return true;
-
         }
         catch(error){
-            
-            alert("Erro ao Criar tema: " + error.message);       
-
+            alert("Erro ao criar resposta: " + error.message);
+            return false;
         }
     }
 
     async Update(model){
         try{
             await this.#service.Update(model);
-            console.log(model.id)
-            
+            console.log(model.id);
             return true;
-
         }
         catch(error){
-            
-            alert("Erro ao atualizar tema: " + error.message);       
-
+            alert("Erro ao atualizar resposta: " + error.message);
+            return false;
         }
     }
 
     async Delete(id){
         try{
-            await this.#service.Delete(id)
+            await this.#service.Delete(id);
+            return true;
         }
         catch(error){
-            alert("Erro ao deletar: " + error)
+            alert("Erro ao deletar resposta: " + error.message);
+            return false;
         }
-        
-        
     }
-
-
-    async GetByThemeId(themeId){
-        
-    }
-
-
-    
-
 
 }
