@@ -20,9 +20,9 @@ export default class AnswerController{
         }
     }
 
-    async Create(text, right, type, questionId){
+    async Create(text, isRight, type, questionId){
         try{
-            const model = new AnswerModel(null, text, right, type, questionId);
+            const model = new AnswerModel(null, text, isRight, type, questionId);
             await this.#service.Insert(model);
             return true;
         }

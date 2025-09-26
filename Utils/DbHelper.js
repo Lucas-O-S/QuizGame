@@ -22,6 +22,7 @@ export class DbHelper {
             questionText TEXT NOT NULL,
             img BLOB,
             ThemeId INTEGER NOT NULL,
+            type TEXT NOT NULL,
             FOREIGN KEY(ThemeId) REFERENCES tbTheme(id)
         )`;
 
@@ -34,7 +35,7 @@ export class DbHelper {
         const query = `CREATE TABLE IF NOT EXISTS tbAnswer (
             id INTEGER PRIMARY KEY,
             answer TEXT NOT NULL,
-            right INTEGER,
+            isRight INTEGER,
             type TEXT NOT NULL,
             questionId INTEGER NOT NULL,
             FOREIGN KEY(questionId) REFERENCES tbQuestion(id)

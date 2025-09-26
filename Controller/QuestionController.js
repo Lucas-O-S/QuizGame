@@ -24,12 +24,12 @@ export default class QuestionController{
     async Create(text, img64, themeId, type){
         try{
             const model = new QuestionModel("", text, null, img64, themeId, type);
-            await this.#service.Insert(model);
-            return true;
+            const result = await this.#service.Insert(model);
+            return result;
         }
         catch(error){
             alert("Erro ao criar questão: " + error.message);
-            return false;
+            return null;
         }
     }
 

@@ -42,7 +42,11 @@ export default class QuestionService{
     
         async Insert(model){
             const result = this.#dao.Insert(model);
+
             if(!result) throw new console.error("Náo foi possivel adicionar o Tema");
+
+            //Retorna o id do ultimo inserido
+            return result;
         }
     
         async Update(model){

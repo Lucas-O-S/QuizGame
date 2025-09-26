@@ -1,51 +1,75 @@
-import StandardModel from "./StandardModel"
-
+import StandardModel from "./StandardModel";
 
 export default class AnswerModel extends StandardModel {
     
     #text;
-    #right;
-    #questionId
+    #isRight;
+    #questionId;
+    #type;
 
-    // C
-    constructor(id = null, text = "", right = false, questionId = null) {
-        super(id)
+    constructor(
+        id = null,
+        text = "",
+        isRight = false,
+        questionId = null,
+        type = "alternativa"
+    ) {
+        super(id);
         this.#text = text;
-        this.#right = right;
-        this.#questionId = questionId;
+        this.#isRight = !!isRight;
+        this.#questionId = questionId !== null ? Number(questionId) : null;
+        this.#type = type;
     }
 
-    // Getters
-    get text(){
-        return this.#text
+    // --- Getters ---
+    get text() {
+        return this.#text;
     }
 
-    get right(){
-        return this.#right
+    get isRight() {
+        return this.#isRight;
     }
 
-    // Setters
-    set text(value){
-        if (typeof value !== 'number' || !Number.isInteger(value)) {
-            throw new Error('text deve ser um número inteiro')
+    get questionId() {
+        return this.#questionId;
+    }
+
+    get type() {
+        return this.#type;
+    }
+
+    // --- Setters ---
+    set text(value) {
+        if (typeof value !== "string" || value.trim() === "") {
+            throw new Error("text deve ser uma string não vazia");
         }
         this.#text = value;
     }
 
-    set right(value) {
-        this.#right = !!value;
+    set isRight(value) {
+        // força para booleano
+        this.#isRight = !!value;
     }
 
-    get questionId(){
-        return this.#questionId;
+    set questionId(value) {
+        const num = Number(value);
+        if (!Number.isInteger(num) || num <= 0) {
+            throw new Error("questionId deve ser um número inteiro positivo");
+        }
+        this.#questionId = num;
     }
 
-    set questionId(questionId){
-        
-        if(Number.isNaN(Number(id))) throw new Error("Id não é um numero");
-        
-        if (value === null || value === undefined || value === "") throw new Error("Id inválido");
-
-        this.#questionId = Number(questionId);
+    set type(value) {
+        if (typeof value !== "string" || value.trim() === "") {
+            throw new Error("type deve ser uma string não vazia");
+        }
+        // Se quiser limitar tipos:
+        const tiposPermitidos = ["alternativa", "dissertativa", "verdadeiroFalso"];
+        if (!tiposPermitidos.includes(value)) {
+            throw new Error(
+                `type inválido. Permitidos: ${tiposPermitidos.join(", ")}`
+            );
+        }
+        this.#type = value;
     }
 }

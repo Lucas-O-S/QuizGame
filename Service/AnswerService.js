@@ -1,4 +1,4 @@
-import {QuestionDao as AnswerDao} from "../DAO/AnswerDao"
+import {AnswerDao} from "../DAO/AnswerDao"
 import AnswerModel from "../Models/AnswerModel"
 
 export default class AnswerService{
@@ -14,11 +14,9 @@ export default class AnswerService{
         
         if(!register) throw new error("Não foi encontrado no banco");
         
-        const model = new AnswerModel(register.id, register.questionText, register.img, register.themeId);
+        const model = new AnswerModel(register.id, register.questionText, register.img, register.themeId, register.type);
 
         return model;
-
-
 
     }
     
@@ -31,7 +29,7 @@ export default class AnswerService{
         
         for(const register of registers){
             
-            const model = new AnswerModel(register.id, register.questionText, register.img, register.themeId);
+            const model = new AnswerModel(register.id, register.questionText, register.img, register.themeId, register.type);
 
             models.push(model);
 
@@ -57,7 +55,7 @@ export default class AnswerService{
     
     async Delete(id){
 
-        const result = this.#dao.Delete(id);
+        const result = await this.#dao.Delete(id);
 
         return result == 1;
 
@@ -69,7 +67,7 @@ export default class AnswerService{
         
         if(!register) throw new error("Não foi encontrado no banco");
         
-        const model = new AnswerModel(register.id, register.text, register.right, register.questionId);
+        const model = new AnswerModel(register.id, register.text, register.isRight, register.questionId, register.type);
 
         return model;
 

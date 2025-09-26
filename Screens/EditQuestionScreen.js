@@ -134,8 +134,8 @@ export default function EditQuestionScreen({ navigation, route }) {
   // Função para salvar questão e respostas
   async function save() {
     const themeId = route?.params?.theme?.id;
-    if (!questionName || !themeId) {
-      alert("Preencha a pergunta e selecione o tema.");
+    if (!questionName) {
+      alert("Preencha a pergunta");
       return;
     }
     // Usa QuestionModel.insert
@@ -143,7 +143,7 @@ export default function EditQuestionScreen({ navigation, route }) {
     await QuestionModel.insert({ text: questionName, imgString: imageBase64, themeId, type });
   
     let answers = []
-    let stop;
+    let stop = false;
 
     // Salva as respostas
     if (checked === "alternativa") {
@@ -157,9 +157,9 @@ export default function EditQuestionScreen({ navigation, route }) {
     let rightAnswerFound = false;
 
     for(let answer in answers){
-      if(answer.right && !rightAnswerFound) rightAnswerFound = true;
+      if(answer.isRight && !rightAnswerFound) rightAnswerFound = true;
       
-      else if(answer.right && rightAnswerFound) stop = true;
+      else if(answer.isRight && rightAnswerFound) stop = true;
 
     }
 
@@ -173,7 +173,10 @@ export default function EditQuestionScreen({ navigation, route }) {
 
   ///Tela principal
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={[styles.container, { paddingBottom: 100 }]}
+        keyboardShouldPersistTaps="handled"
+      >
       <TextInput
         value={questionName}
         onChangeText={setQuestionName}
