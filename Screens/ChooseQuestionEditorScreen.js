@@ -13,7 +13,7 @@ export default function ChooseQuestionEditorScreen({ navigation, route }) {
   const questionController = new QuestionController();
 
   async function RetriveThemes() {
-    const list = await questionController.GetAll();
+    const list = await questionController.GetByThemeId(theme.id);
     setQuestionList(list ?? []);
   }
 

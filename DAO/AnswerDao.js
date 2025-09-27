@@ -45,6 +45,7 @@ export class AnswerDao extends StandardDAO{
         const connection = await DbHelper.GetConnection();
         console.log("QuestionId envidado :" + questionId)
         console.log("Type envidado: " + type)
+        
         const register = await connection.getAllAsync(
             "SELECT * FROM " + this.dbName + " WHERE questionId = ? AND type = ?", [questionId, type]   
         );

@@ -1,6 +1,6 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
-import ThemeControler from "../Controller/ThemeController";
+import ThemeController from "../Controller/ThemeController";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import InsertThemeComponent from "../Components/InsertThemeComponent.js";
 import styles from "../Styles/CreatorChooseScreenStyles.js";
@@ -11,7 +11,7 @@ export default function CreatorChooseScreen({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTheme, setEditingTheme] = useState(null);
 
-  const themeControler = new ThemeControler();
+  const themeControler = new ThemeController();
 
   async function RetriveThemes() {
     const list = await themeControler.GetAll();
@@ -26,6 +26,25 @@ export default function CreatorChooseScreen({ navigation }) {
       fetchThemes();
     }, [])
   );
+
+    function CallDelete(id) {
+      Alert.alert(
+        "Confirmar exclusão",
+        "Deseja realmente excluir?",
+        [
+          { text: "Cancelar", style: "cancel" },
+          { 
+            text: "Excluir", 
+            style: "destructive",
+            onPress: async () => {
+              await ThemeController.Delete(id);
+              await RetriveThemes();
+            } 
+          },
+        ],
+        { cancelable: true }
+      );
+    };
 
   function openCreateModal() {
     setEditingTheme(null);       // criando um novo tema
@@ -73,7 +92,7 @@ export default function CreatorChooseScreen({ navigation }) {
 
                 <TouchableOpacity
                   onPress={async () => {
-                    await themeControler.Delete(theme.id);
+                    await CallDelete(theme.id);
                     await RetriveThemes();
                   }}
                   style = {[styles.button, styles.buttonDelete]}

@@ -49,16 +49,18 @@ export default class QuestionService{
 
         async GetByThemeId(themeId){
             
-            const register = await this.#dao.GetByThemeId(themeId);
-            
-            if(!register) throw new error("Não foi encontrado no banco");
-            
-            const model = new QuestionModel(register.id, register.questionText, register.themeId);
-            
+            const registers = await this.#dao.GetByThemeId(themeId);
+            console.log(registers)
+            let models = [];
 
-            
+            for(const register of registers){
 
-            return model;
+                const model = new QuestionModel(register.id, register.questionText, register.themeId, register.type);
+                
+                models.push(model);
+            
+            }
+            return models;
         
         }
 

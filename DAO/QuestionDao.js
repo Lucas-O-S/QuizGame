@@ -35,7 +35,7 @@ export class QuestionDao extends StandardDAO {
         
         const connection = await DbHelper.GetConnection();
 
-        const register = await connection.getFirstAsync(
+        const register = await connection.getAllAsync(
             "SELECT * FROM " + this.dbName + " WHERE ThemeId = ?", [ThemeId]
         );
 

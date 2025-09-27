@@ -9,7 +9,9 @@ export default function StartScreen({ navigation }) {
       <Text style={styles.title}>Quiz Game</Text>
 
       <View style={styles.container}>
-        <TouchableOpacity style={styles.button1}>
+        <TouchableOpacity style={styles.button1}
+          onPress={() => navigation.navigate("ChooseScreen")}
+        >
           <Text style={styles.buttonText}>Jogar</Text>
         </TouchableOpacity>
 

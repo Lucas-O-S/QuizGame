@@ -9,7 +9,9 @@ import startScreen from './Screens/StartScreen';
 import creatorChooseScreen from "./Screens/CreatorChooseScreen";
 import ChooseQuestionEditorScreen from "./Screens/ChooseQuestionEditorScreen";
 import EditQuestionScreen from "./Screens/EditQuestionScreen";
-
+import ChooseScreen from "./Screens/ChooseScreen"
+import StartGameScreen from "./Screens/StartGameScreen"
+import GameScreen from './Screens/GameScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +28,9 @@ export default function App() {
         <Stack.Screen name="CreatorChooseScreen" component={creatorChooseScreen}/>
         <Stack.Screen name="ChooseQuestionEditorScreen" component={ChooseQuestionEditorScreen}/>
         <Stack.Screen name="EditQuestionScreen" component={EditQuestionScreen}/>
+        <Stack.Screen name="ChooseScreen" component={ChooseScreen}/>
+        <Stack.Screen name="StartGameScreen" component={StartGameScreen}/>
+        <Stack.Screen name="GameScreen" component={GameScreen}/>
 
       </Stack.Navigator>
     </NavigationContainer>
