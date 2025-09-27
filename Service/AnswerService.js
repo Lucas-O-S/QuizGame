@@ -10,7 +10,7 @@ export default class AnswerService{
     }
 
     async Get (id) {
-        const register = await this.#dao.Get(id);
+        const register = await this.#dao.GetById(id);
         
         if(!register) throw new error("Não foi encontrado no banco");
         
@@ -47,7 +47,14 @@ export default class AnswerService{
     }
 
     async Update(model){
-        // model deve conter o campo 'type'
+
+        console.log([
+            model.id,
+            model.isRight,
+            model.text,
+            model.questionId
+        ])
+
         const result = await this.#dao.Update(model);
         if(!result) throw new Error("Não foi possível atualizar a resposta");
         return result == 1;
@@ -61,15 +68,22 @@ export default class AnswerService{
 
     }
 
-    async GetByQuestionId(questionId){
-
-        const register = await this.#dao.GetByThemeId(questionId);
+    async GetByQuestionIdAndType(questionId,type){
+        const registers = await this.#dao.GetByQuestionIdAndType(questionId, type);
         
-        if(!register) throw new error("Não foi encontrado no banco");
+        if(!registers) throw new error("Não foi encontrado no banco");
+                
+        let models = [];
         
-        const model = new AnswerModel(register.id, register.text, register.isRight, register.questionId, register.type);
+        for(const register of registers){
+            console.log(register)
+            const model = new AnswerModel(register.id, register.answer, register.isRight==1 ? true : false , register.questionId, register.type);
 
-        return model;
+            models.push(model);
+
+        }
+
+        return models;
 
 
     }

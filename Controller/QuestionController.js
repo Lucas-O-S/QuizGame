@@ -13,7 +13,6 @@ export default class QuestionController{
     async GetAll(){
         try{
             const questionList = await this.#service.GetAll();
-            console.log(questionList.length);
             return questionList || [];
         }
         catch(error){
@@ -40,7 +39,6 @@ export default class QuestionController{
     async Update(model){
         try{
             await this.#service.Update(model);
-            console.log(model.id);
             return true;
         }
         catch(error){
@@ -60,18 +58,36 @@ export default class QuestionController{
         }
     }
 
+    async GetById(id){
+        try{
 
-    async GetByThemeId(themeId){
-        try {
-            return await this.#service.GetByThemeId(themeId);
-        } catch (error) {
+            const result = await this.#service.GetById(id)
+            console.log("Texto da controler: " + result.text)
+            return result;
+        }
+        catch (error) {
+        
             alert("Erro ao buscar questões por tema: " + error.message);
-            return [];
+       
+            return null;
+       
         }
     }
 
-    // Removido: Funções relacionadas à conversão de imagem/base64
-    
+    async GetByThemeId(themeId){
+        try {
+            
+            return await this.#service.GetByThemeId(themeId);
+        
+        }
+        catch (error) {
+        
+            alert("Erro ao buscar questões por tema: " + error.message);
+       
+            return [];
+       
+        }
+    }    
 
 
     

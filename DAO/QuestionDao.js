@@ -33,11 +33,11 @@ export class QuestionDao extends StandardDAO {
     }
 
     async GetByThemeId(ThemeId) {
+        
         const connection = await DbHelper.GetConnection();
 
-        const register = await connection.getAsync(
-            "SELECT * FROM " + this.dbName + " WHERE ThemeId = ?",
-            [ThemeId]
+        const register = await connection.getFirstAsync(
+            "SELECT * FROM " + this.dbName + " WHERE ThemeId = ?", [ThemeId]
         );
 
         await connection.closeAsync();

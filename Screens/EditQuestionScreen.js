@@ -7,6 +7,7 @@ import QuestionController from "../Controller/QuestionController";
 import AnswerEditor from "../Components/AnswerEditor";
 import AnswerControler from "../Controller/AnswerController";
 import AnswerModel from "../Models/AnswerModel";
+import QuestionModel from "../Models/QuestionModel";
 
 export default function EditQuestionScreen({ navigation, route }) {
   const questionController = new QuestionController();
@@ -14,19 +15,20 @@ export default function EditQuestionScreen({ navigation, route }) {
 
   const { theme, questionId } = route.params ?? {};
 
-  const [questionName, setQuestionName] = useState("");
+  const [questionText, setQuestionName] = useState("");
 
   // Respostas para salvar
-  const [answer1, setAnswer1] = useState(new AnswerModel(null, "", false, questionId ? questionId : null , "alternativa"));
-  const [answer2, setAnswer2] = useState(new AnswerModel(null, "", false, questionId ? questionId : null, "alternativa"));
-  const [answer3, setAnswer3] = useState(new AnswerModel(null, "", false, questionId ? questionId : null, "alternativa"));
-  const [answer4, setAnswer4] = useState(new AnswerModel(null, "", false, questionId ? questionId : null, "alternativa"));
+  const [answer1, setAnswer1] = useState(new AnswerModel(null, "", false, questionId ?? null, "alternativa"));
+  const [answer2, setAnswer2] = useState(new AnswerModel(null, "", false, questionId ?? null, "alternativa"));
+  const [answer3, setAnswer3] = useState(new AnswerModel(null, "", false, questionId ?? null, "alternativa"));
+  const [answer4, setAnswer4] = useState(new AnswerModel(null, "", false, questionId ?? null, "alternativa"));
 
-  const [answerTrue, setAnswerTrue] = useState(new AnswerModel(null, "", false, questionId, "TrueFalse"));
-  const [answerFalse, setAnswerFalse] = useState(new AnswerModel(null, "", false, questionId, "TrueFalse"));
+  const [answerTrue, setAnswerTrue] = useState(new AnswerModel(null, "Verdadeiro", false, questionId, "TrueFalse"));
+  const [answerFalse, setAnswerFalse] = useState(new AnswerModel(null, "Falso", false, questionId, "TrueFalse"));
 
   // Resposta temporária
   const [editingAnswer, setEditingAnswer] = useState(new AnswerModel());
+  const [editingQuestion, setEditingQuestion] = useState(new QuestionModel());
 
   // Tipo da pergunta
   const [checked, setChecked] = useState("alternativa");
@@ -37,17 +39,53 @@ export default function EditQuestionScreen({ navigation, route }) {
 
   useFocusEffect(
     useCallback(() => {
-      // Lógica para carregar dados existentes se necessário
+      async function AsyncData() {
+        await RetriveData();
+      }
+      AsyncData()
     }, [])
   );
+
+  async function RetriveData(){
+      if (questionId) {
+        const question = await questionController.GetById(questionId);
+        
+        if (!question) navigation.goBack();
+
+        setChecked(question.type)
+        setQuestionName(question.text);
+
+        const answersFound = await answerControler.GetByQuestionIdAndType(question.id, question.type);
+
+        answersFound.forEach((answer, i) => {
+
+          if (question.type == "alternativa") {
+            switch (i) {
+              
+              case 0: setAnswer1(new AnswerModel(answer.id, answer.text, answer.isRight, answer.questionId, answer.type)); break;
+              case 1: setAnswer2(answer); break;
+              case 2: setAnswer3(answer); break;
+              case 3: setAnswer4(answer); break;
+              
+            }
+            
+          } else {
+           
+            if (answer.text === "Verdadeiro") setAnswerTrue(answer);
+            else setAnswerFalse(answer);
+          
+          }
+        });
+      }
+  }
 
   // Renderiza alternativas
   function renderAlternatives() {
     const answers = [
-      { key: "answer1", value: answer1 },
-      { key: "answer2", value: answer2 },
-      { key: "answer3", value: answer3 },
-      { key: "answer4", value: answer4 },
+      { key: "answer1", value: answer1, label : "A"},
+      { key: "answer2", value: answer2, label : "B" },
+      { key: "answer3", value: answer3, label : "C" },
+      { key: "answer4", value: answer4, label : "D" },
     ];
 
     return answers.map((answer) => (
@@ -56,7 +94,7 @@ export default function EditQuestionScreen({ navigation, route }) {
         style={styles.answerBox}
         onPress={() => openEditModal(answer.key)}
       >
-        <Text style={styles.answerLabel}>{answer.key}</Text>
+        <Text style={styles.answerLabel}>{answer.label}</Text>
         <Text style={styles.answerText}>{answer.value.text || "Toque para editar"}</Text>
       </TouchableOpacity>
     ));
@@ -75,8 +113,10 @@ export default function EditQuestionScreen({ navigation, route }) {
         style={styles.answerBox}
         onPress={() => openEditModal(answer.key)}
       >
-        <Text style={styles.answerLabel}>{answer.key === "answerTrue" ? "Verdadeiro" : "Falso"}</Text>
-        <Text style={styles.answerText}>{answer.value.text || "Toque para editar"}</Text>
+        <Text style={styles.answerLabel}>
+          {answer.key === "answerTrue" ? "Verdadeiro" : "Falso"}
+        </Text>
+        <Text style={styles.answerText}>{"Toque para editar"}</Text>
       </TouchableOpacity>
     ));
   }
@@ -100,12 +140,12 @@ export default function EditQuestionScreen({ navigation, route }) {
 
   // Salva questão e respostas
   async function save() {
-    if (!questionName) {
+    if (!questionText) {
       alert("Preencha a pergunta");
       return;
     }
 
-    let answers = checked === "alternativa"
+    const answers = checked === "alternativa"
       ? [answer1, answer2, answer3, answer4]
       : [answerTrue, answerFalse];
 
@@ -113,21 +153,36 @@ export default function EditQuestionScreen({ navigation, route }) {
     let stop = false;
 
     for (let answer of answers) {
-
-      if (answer.isRight && !rightAnswerFound) rightAnswerFound = true;
-      
-      else if (answer.isRight && rightAnswerFound) stop = true;
-        }
-
-    if (stop) alert("Deve haver apenas uma resposta certa");
-    else if (!rightAnswerFound) alert("Deve haver pelo menos uma resposta certa");
-    else {
-      const nextid = await questionController.Insert(questionName, theme.id, checked);
-      console.log(nextid);
-      for(let answer of answers){
-
-        await answerControler.Insert(answer.text, answer.isRight, checked, Number(nextid))
+      if (answer.isRight && !rightAnswerFound) {
+        rightAnswerFound = true;
+      } else if (answer.isRight && rightAnswerFound) {
+        stop = true;
       }
+    }
+
+    if (stop) {
+      alert("Deve haver apenas uma resposta certa");
+    }
+    
+    else if (!rightAnswerFound) {
+      alert("Deve haver pelo menos uma resposta certa");
+    }
+    
+    else {
+      if(questionId){
+        await questionController.Update(new QuestionModel(questionId,questionText, theme.id, checked))
+        for (let answer of answers) {
+          await answerControler.Update(new AnswerModel(answer.id, answer.text, answer.isRight, checked, Number(questionId)));
+        }
+      }
+      else{
+        const newQuestionId = await questionController.Insert(questionText, theme.id, checked);
+        for (let answer of answers) {
+          await answerControler.Insert(answer.text, answer.isRight, checked, Number(newQuestionId));
+        }
+      }
+
+
       alert("Questão salva com sucesso!");
       navigation.goBack();
     }
@@ -139,7 +194,7 @@ export default function EditQuestionScreen({ navigation, route }) {
       keyboardShouldPersistTaps="handled"
     >
       <TextInput
-        value={questionName}
+        value={questionText}
         onChangeText={setQuestionName}
         placeholder="Digite a pergunta"
         style={styles.input}
@@ -154,25 +209,23 @@ export default function EditQuestionScreen({ navigation, route }) {
         />
         <RadioButton.Item
           label="Verdadeiro/Falso"
-          value="verdadeiroFalse"
+          value="TrueFalse"
           status={checked === "TrueFalse" ? "checked" : "unchecked"}
           onPress={() => setChecked("TrueFalse")}
         />
       </View>
 
-      {/* Modal de edição de resposta */}
       <AnswerEditor
         visible={modalVisible}
         editingAnswer={editingAnswer}
         onClose={() => setModalVisible(false)}
-       onSaveSuccess={(answerData) => {
-          // answerData já tem text e isRight corretos do modal
+        onSaveSuccess={(answerData) => {
           const newAnswer = new AnswerModel(
-            editingAnswer.id ?? answerData.id,      // mantém o id se houver
-            answerData.text ?? "",                  // garante que não fique undefined
-            answerData.isRight ?? false,            // valor do checkbox
-            editingAnswer.questionId ?? questionId, // mantém o questionId do original ou usa da pergunta
-            editingAnswer.type ?? checked           // mantém o tipo original ou usa o tipo da pergunta
+            editingAnswer.id ?? answerData.id,
+            answerData.text ?? "",
+            answerData.isRight ?? false,
+            editingAnswer.questionId ?? questionId,
+            editingAnswer.type ?? checked
           );
 
           switch (editingKey) {
@@ -186,9 +239,7 @@ export default function EditQuestionScreen({ navigation, route }) {
 
           setModalVisible(false);
         }}
-
       />
-
 
       <View style={styles.answersContainer}>
         {checked === "alternativa" ? renderAlternatives() : renderTrueFalse()}

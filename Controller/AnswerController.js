@@ -11,7 +11,6 @@ export default class AnswerController{
     async GetAll(){
         try{
             const answerList = await this.#service.GetAll();
-            console.log(answerList.length);
             return answerList || [];
         }
         catch(error){
@@ -23,7 +22,6 @@ export default class AnswerController{
     async Insert(text, isRight, type, questionId){
         try{
             const model = new AnswerModel(null, text, isRight, questionId, type);
-
             await this.#service.Insert(model);
             return true;
         }
@@ -36,7 +34,6 @@ export default class AnswerController{
     async Update(model){
         try{
             await this.#service.Update(model);
-            console.log(model.id);
             return true;
         }
         catch(error){
@@ -52,6 +49,17 @@ export default class AnswerController{
         }
         catch(error){
             alert("Erro ao deletar resposta: " + error.message);
+            return false;
+        }
+    }
+
+    async GetByQuestionIdAndType(questionId, type){
+        try{
+            const result = await this.#service.GetByQuestionIdAndType(questionId,type)
+            return result;
+        }
+        catch(error){
+            alert("Erro ao buscar respostas: " + error.message);
             return false;
         }
     }

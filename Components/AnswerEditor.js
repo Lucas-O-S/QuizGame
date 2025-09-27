@@ -40,16 +40,19 @@ export default function AnswerEditor({ visible, onClose, onSaveSuccess, editingA
 
           <Text style={styles.label}>Texto da resposta</Text>
           <TextInput
-            value={answerText}
+            value={editingAnswer.type === "TrueFalse"
+              ? (answerText === "Verdadeiro" ? "Verdadeiro" : "Falso")
+              : answerText}
             onChangeText={setAnswerText}
+            editable={editingAnswer.type !== "TrueFalse"}
+            placeholder="Digite a resposta"
             style={styles.input}
-            placeholder="Digite a resposta..."
           />
 
           <Checkbox.Item
             label="É a resposta correta?"
             status={isRight ? "checked" : "unchecked"}
-            onPress={() => setIsRight(prev => !prev)} // alterna o valor corretamente
+            onPress={() => setIsRight(prev => !prev)}
           />
 
           <View style={styles.buttonRow}>

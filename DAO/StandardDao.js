@@ -9,11 +9,11 @@ class StandardDAO{
         this.dbName = tbName;
     }
 
-    async Get(Id) {
+    async GetById(Id) {
 
         const connection = await DbHelper.GetConnection();
 
-        const register = await connection.getAsync("select * from " + this.dbName  + " where Id = ?", [Id]);
+        const register = await connection.getFirstAsync("select * from " + this.dbName  + " where Id = ?", [Id]);
        
         await connection.closeAsync();
 
