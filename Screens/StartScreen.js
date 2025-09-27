@@ -4,6 +4,7 @@ import styles from "../Styles/StartScreenStyles";
 
 export default function StartScreen({ navigation }) {
   return (
+
     <View style={styles.bg}>
       <Text style={styles.title}>Quiz Game</Text>
 

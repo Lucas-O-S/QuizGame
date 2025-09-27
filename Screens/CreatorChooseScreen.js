@@ -6,6 +6,7 @@ import InsertThemeComponent from "../Components/InsertThemeComponent.js";
 import styles from "../Styles/CreatorChooseScreenStyles.js";
 
 export default function CreatorChooseScreen({ navigation }) {
+
   const [themeList, setThemeList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTheme, setEditingTheme] = useState(null);

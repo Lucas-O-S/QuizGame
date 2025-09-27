@@ -1,41 +1,46 @@
-
 import { DbHelper } from "../Utils/DbHelper";
 import StandardDAO from "./StandardDao";
 
-
-export class ThemeDao extends StandardDAO{
+export class QuestionDao extends StandardDAO {
     
-    
-    constructor(){
+    constructor() {
         super("tbQuestion");
     }
 
-    async Insert(model){
+    async Insert(model) {
+        console.log(model.text);
+
+        const connection = await DbHelper.GetConnection();
+        // Removido o campo img
+        const query = "INSERT INTO " + this.dbName + " (questionText, ThemeId, type) VALUES (?, ?, ?)";
+        const result = await connection.runAsync(query, [model.text, model.themeId, model.type]);
+
+        await connection.closeAsync();
+
+        return result.lastInsertRowId;
+    }
+
+    async Update(model) {
+        const connection = await DbHelper.GetConnection();
+
+        // Removido o campo img
+        const query = "UPDATE " + this.dbName + " SET questionText = ? WHERE id = ?";
+        const result = await connection.runAsync(query, [model.text, model.id]);
+
+        await connection.closeAsync();
+        return result.changes == 1;
+    }
+
+    async GetByThemeId(ThemeId) {
         
         const connection = await DbHelper.GetConnection();
 
-        const query = "insert into " + this.dbName + " (text, img, themeId) values(?,?,?)  "
-
-        const result = await connection.execAsync(query, [model.text, model.imgByte, model.themeId])
-
-        await connection.closeAsync();
-
-        return result == 1;
-    }
-
-    async Update(model){
-        
-        const connection = DbHelper.GetConnection();
-
-        const query = "update " + this.dbName + " set name = ?, img = ?  where id = ?"
-
-        const result = await connection.execAsync(query, [model.text, model.imgByte ,model.id])
+        const register = await connection.getFirstAsync(
+            "SELECT * FROM " + this.dbName + " WHERE ThemeId = ?", [ThemeId]
+        );
 
         await connection.closeAsync();
 
-        return result == 1;
+        return register || null;
     }
-
-
-
 }
