@@ -1,10 +1,9 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { ScrollView, Text, TouchableOpacity, StyleSheet, View, Alert } from "react-native";
+import { ScrollView, Text, TouchableOpacity, StyleSheet, View } from "react-native";
 import { useCallback, useState } from "react";
 
 import QuestionController from "../Controller/QuestionController";
 import AnswerControler from "../Controller/AnswerController";
-import AnswerModel from "../Models/AnswerModel";
 
 export default function GameScreen({ navigation, route }) {
   const questionController = new QuestionController();
@@ -18,6 +17,7 @@ export default function GameScreen({ navigation, route }) {
 
   const [answerArray, setAnswerArray] = useState([]);
   const [choice, setChoice] = useState(-1); // índice da resposta escolhida
+  const [answered, setAnswered] = useState(false); // se já respondeu
 
   const question = questionArray[index];
   const [checked, setChecked] = useState("alternativa");
@@ -30,7 +30,8 @@ export default function GameScreen({ navigation, route }) {
         const answers = await answerControler.GetByQuestionIdAndType(question.id, question.type);
         setAnswerArray(answers);
         setChecked(question.type);
-        setChoice(-1); // reseta escolha ao carregar nova pergunta
+        setChoice(-1); 
+        setAnswered(false); 
       }
 
       loadAnswers();
@@ -39,93 +40,100 @@ export default function GameScreen({ navigation, route }) {
 
   // Seleciona resposta
   function selectAnswer(i) {
+    if (answered) return; // não permite mudar após responder
     setChoice(i);
   }
 
-  // Confirmar resposta
-  function confirmAnswer() {
-    if (choice === -1) {
-      Alert.alert("Escolha uma resposta!");
-      return;
-    }
+  // Confirmar ou seguir
+  function handleConfirm() {
+    if (!answered) {
+      if (choice === -1) return; // nada selecionado
+      const selected = answerArray[choice];
+      const correctAnswer = answerArray.find(a => a.isRight);
 
-    const selectedAnswer = answerArray[choice];
+      if (selected.isRight) {
+        setScore(score + 1);
+      } else {
+        setErrors(errors + 1);
+      }
 
-    if (selectedAnswer.isRight) {
-      Alert.alert("Correto!");
-      setScore(score + 1);
+      setAnswered(true);
     } else {
-      Alert.alert("Errado!");
-      setErrors(errors + 1);
-    }
-
-    // Próxima pergunta ou final
-    if (index + 1 < questionArray.length) {
-      setIndex(index + 1);
-    } else {
-      Alert.alert("Fim do jogo!", `Pontuação final: ${score + (selectedAnswer.isRight ? 1 : 0)}\nErros: ${errors + (selectedAnswer.isRight ? 0 : 1)}`);
-      navigation.goBack();
+      // Avança para próxima pergunta
+      if (index + 1 < questionArray.length) {
+        setIndex(index + 1);
+      } else {
+        navigation.navigate("GameEndScreen", {score, errors, totalQuestions : questionArray.length}); // ou tela de resultados
+      }
     }
   }
 
   // Renderiza alternativas
   function renderAlternatives() {
-    return answerArray.map((answer, i) => (
-      <TouchableOpacity
-        key={i}
-        style={[
-          styles.answerBox,
-          choice === i && { borderColor: "#007bff", borderWidth: 2 }
-        ]}
-        onPress={() => selectAnswer(i)}
-      >
-        <Text style={styles.answerLabel}>{String.fromCharCode(65 + i)}</Text>
-        <Text style={styles.answerText}>{answer.text}</Text>
-      </TouchableOpacity>
-    ));
+    const correctAnswer = answerArray.find(a => a.isRight);
+    return answerArray.map((answer, i) => {
+      let style = [styles.answerBox];
+      if (answered) {
+        if (answer.isRight) style.push({ borderColor: "green", borderWidth: 2 });
+        if (i === choice && !answer.isRight) style.push({ borderColor: "red", borderWidth: 2 });
+      } else if (i === choice) {
+        style.push({ borderColor: "#007bff", borderWidth: 2 });
+      }
+
+      return (
+        <TouchableOpacity key={i} style={style} onPress={() => selectAnswer(i)}>
+          <Text style={styles.answerLabel}>{String.fromCharCode(65 + i)}</Text>
+          <Text style={styles.answerText}>{answer.text}</Text>
+        </TouchableOpacity>
+      );
+    });
   }
 
-  // Renderiza verdadeiro/falso
   function renderTrueFalse() {
-    return answerArray.map((answer, i) => (
-      <TouchableOpacity
-        key={i}
-        style={[
-          styles.answerBox,
-          choice === i && { borderColor: "#007bff", borderWidth: 2 }
-        ]}
-        onPress={() => selectAnswer(i)}
-      >
-        <Text style={styles.answerLabel}>{answer.text}</Text>
-      </TouchableOpacity>
-    ));
+    const correctAnswer = answerArray.find(a => a.isRight);
+    return answerArray.map((answer, i) => {
+      let style = [styles.answerBox];
+      if (answered) {
+        if (answer.isRight) style.push({ borderColor: "green", borderWidth: 2 });
+        if (i === choice && !answer.isRight) style.push({ borderColor: "red", borderWidth: 2 });
+      } else if (i === choice) {
+        style.push({ borderColor: "#007bff", borderWidth: 2 });
+      }
+
+      return (
+        <TouchableOpacity key={i} style={style} onPress={() => selectAnswer(i)}>
+          <Text style={styles.answerLabel}>{answer.text}</Text>
+        </TouchableOpacity>
+      );
+    });
   }
 
   if (!question) return <Text>Carregando...</Text>;
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { paddingBottom: 100 }]} keyboardShouldPersistTaps="handled">
-      {/* Pontuação e erros */}
       <View style={styles.statusContainer}>
         <Text style={styles.statusText}>Pontuação: {score}</Text>
         <Text style={styles.statusText}>Erros: {errors}</Text>
       </View>
 
-      {/* Pergunta */}
       <Text style={styles.input}>{question.text}</Text>
 
-      {/* Respostas */}
       <View style={styles.answersContainer}>
         {checked === "alternativa" ? renderAlternatives() : renderTrueFalse()}
       </View>
 
-      {/* Botão confirmar */}
+      {answered && choice !== -1 && (
+        <Text style={{ marginTop: 10, fontWeight: "bold", fontSize: 16 }}>
+          {answerArray[choice].isRight ? "Você acertou!" : `Errado! A resposta correta é: ${answerArray.find(a => a.isRight).text}`}
+        </Text>
+      )}
+
       <View>
-        <TouchableOpacity onPress={confirmAnswer} style={styles.button}>
-          <Text style={styles.buttonText}>Confirmar</Text>
+        <TouchableOpacity onPress={handleConfirm} style={styles.button}>
+          <Text style={styles.buttonText}>{answered ? "Próxima" : "Confirmar"}</Text>
         </TouchableOpacity>
       </View>
-      
     </ScrollView>
   );
 }

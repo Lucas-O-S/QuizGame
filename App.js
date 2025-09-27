@@ -12,6 +12,7 @@ import EditQuestionScreen from "./Screens/EditQuestionScreen";
 import ChooseScreen from "./Screens/ChooseScreen"
 import StartGameScreen from "./Screens/StartGameScreen"
 import GameScreen from './Screens/GameScreen';
+import GameEndScreen from './Screens/GameEndScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ export default function App() {
         <Stack.Screen name="ChooseScreen" component={ChooseScreen}/>
         <Stack.Screen name="StartGameScreen" component={StartGameScreen}/>
         <Stack.Screen name="GameScreen" component={GameScreen}/>
+        <Stack.Screen name="GameEndScreen" component={GameEndScreen}/>
 
       </Stack.Navigator>
     </NavigationContainer>
