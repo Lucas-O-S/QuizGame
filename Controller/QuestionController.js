@@ -1,5 +1,6 @@
 import QuestionModel from "../Models/QuestionModel";
 import QuestionService from "../Service/QuestionService";
+import * as FileSystem from 'expo-file-system';
 
 export default class QuestionController{
     
@@ -21,10 +22,10 @@ export default class QuestionController{
         }
     }
 
-    async Insert(text, img64, themeId, type){
+    async Insert(text, themeId, type){
         try{
-            console.log("AAAA")
-            const model = new QuestionModel(null, text, null, img64, themeId, type);
+            const model = new QuestionModel(null, text, themeId, type);
+            console.log("passou por controller")
 
             const result = await this.#service.Insert(model);
             return result;
@@ -68,6 +69,9 @@ export default class QuestionController{
             return [];
         }
     }
+
+    // Removido: Funções relacionadas à conversão de imagem/base64
+    
 
 
     

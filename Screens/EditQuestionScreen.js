@@ -7,20 +7,16 @@ import { RadioButton } from "react-native-paper";
 import AnswerEditor from "../Components/AnswerEditor";
 import AnswerControler from "../Controller/AnswerController";
 import AnswerModel from "../Models/AnswerModel";
-import * as FileSystem from "expo-file-system";
 
 export default function EditQuestionScreen({ navigation, route }) {
   const questionController = new QuestionController();
   const answerControler = new AnswerControler();
 
-  const {theme} = route.params ?? null;
+  const {theme, questionId} = route.params ?? null;
 
   ///A questao a mudar
   const [questionName, setQuestionName] = useState("");
 
-  //A imagem a salvar
-  const [imageUri, setImageUri] = useState(null);
-  const [imageBase64, setImageBase64] = useState(null);
 
   ///Muda as resposta para salvar
   const [answer1, setAnswer1] = useState(new AnswerModel());
@@ -48,35 +44,7 @@ export default function EditQuestionScreen({ navigation, route }) {
     }, [])
   );
 
-  //Parte relacionada a imagem da questão
-  async function handleSelectImage(){
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      alert("Permissão para acessar a galeria foi negada.");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-      base64: false, // não pega aqui direto
-    });
-
-    if (!result.canceled && result.assets?.length > 0) {
-      const selectedImage = result.assets[0];
-      setImageUri(selectedImage.uri); // Mostra a imagem
-
-      //CONVERTE PARA BASE64
-      const base64Image = await FileSystem.readAsStringAsync(selectedImage.uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
-
-      //Armazena em outro state, ex:
-      setImageBase64(base64Image); 
-    }
-  };
-
-
+  // Removido: Função de seleção de imagem
   //Rederiza alternativas
   function renderAlternatives(){
     const answers = [
@@ -148,9 +116,7 @@ export default function EditQuestionScreen({ navigation, route }) {
 
     // Salva as respostas
     if (checked === "alternativa") {
-
       answers = [answer1, answer2, answer3, answer4]
-
     } else {
       answers = [answerTrue, answerFalse]
     }
@@ -159,22 +125,17 @@ export default function EditQuestionScreen({ navigation, route }) {
 
     for(let answer in answers){
       if(answer.isRight && !rightAnswerFound) rightAnswerFound = true;
-      
       else if(answer.isRight && rightAnswerFound) stop = true;
-
     }
 
     if(stop) alert("Deve haver apenas uma resposta certa");
-
     else if(rightAnswerFound) alert("Deve haver pelo menos uma resposta certa")
-
     else{
       console.log(theme.id + " " + theme.text);
-      await questionController.Insert(questionName, imageBase64, theme.id, checked);
+      await questionController.Insert(questionName, theme.id, checked);
       alert("Questão salva com sucesso!");
       navigation.goBack();
     }
-    
   }
 
   ///Tela principal
@@ -190,13 +151,7 @@ export default function EditQuestionScreen({ navigation, route }) {
         style={styles.input}
       />
 
-      <TouchableOpacity style={styles.imageBox} onPress={handleSelectImage}>
-        {imageUri ? (
-          <Image source={{ uri: imageUri }} style={styles.image} />
-        ) : (
-          <Text style={styles.placeholderText}>Toque para selecionar imagem</Text>
-        )}
-      </TouchableOpacity>
+      {/* Removido: UI de seleção de imagem */}
 
       <View>
         <RadioButton.Item
@@ -263,26 +218,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginBottom: 20,
   },
-  imageBox: {
-    width: "100%",
-    height: 200,
-    borderWidth: 1,
-    borderColor: "#999",
-    borderRadius: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f0f0f0",
-    overflow: "hidden",
-    marginBottom: 20,
-  },
-  placeholderText: {
-    color: "#999",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
+  // Removido: estilos relacionados à imagem
   answersContainer: {
     marginTop: 20,
   },

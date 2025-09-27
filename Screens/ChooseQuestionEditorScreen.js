@@ -40,7 +40,7 @@ export default function ChooseQuestionEditorScreen({ navigation, route }) {
           questionlist.map((question) => (
             <View key={question.id} style={{ marginBottom: 15 }}>
               <TouchableOpacity onPress={() => {}}>
-                <Text style={{ fontSize: 18 }}>{question.name }</Text>
+                <Text style={{ fontSize: 18 }}>{question.text}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity

@@ -20,7 +20,6 @@ export class DbHelper {
         const query = `CREATE TABLE IF NOT EXISTS tbQuestion (
             id INTEGER PRIMARY KEY,
             questionText TEXT NOT NULL,
-            img BLOB,
             ThemeId INTEGER NOT NULL,
             type TEXT NOT NULL,
             FOREIGN KEY(ThemeId) REFERENCES tbTheme(id)
