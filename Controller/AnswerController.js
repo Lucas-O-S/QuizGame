@@ -22,7 +22,8 @@ export default class AnswerController{
 
     async Insert(text, isRight, type, questionId){
         try{
-            const model = new AnswerModel(null, text, isRight, type, questionId);
+            const model = new AnswerModel(null, text, isRight, questionId, type);
+
             await this.#service.Insert(model);
             return true;
         }

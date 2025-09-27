@@ -40,7 +40,7 @@ export default class AnswerService{
     }
 
     async Insert(model){
-        // model deve conter o campo 'type'
+
         const result = await this.#dao.Insert(model);
         if(!result) throw new Error("Não foi possível adicionar a resposta");
         return result;

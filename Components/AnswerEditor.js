@@ -1,35 +1,34 @@
 import { useEffect, useState } from "react";
-import {Modal,View,Text,TouchableOpacity,TextInput,Alert,StyleSheet} from "react-native";
+import { Modal, View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
 import { Checkbox } from "react-native-paper";
+import AnswerModel from "../Models/AnswerModel";
 
-export default function AnswerEditor({visible, onClose, onSaveSuccess, editingAnswer,}) {
-
+export default function AnswerEditor({ visible, onClose, onSaveSuccess, editingAnswer }) {
   const [answerText, setAnswerText] = useState("");
-  
-  const [right, setRight] = useState(false);
+  const [isRight, setIsRight] = useState(false);
 
+  // Sempre atualiza quando o modal abre ou o editingAnswer muda
   useEffect(() => {
-    if (visible && editingAnswer) {
-      setAnswerText(editingAnswer.text || "");
-
-      setRight(editingAnswer.right || false);
-
+    if (visible && editingAnswer instanceof AnswerModel) {
+      setAnswerText(editingAnswer.text ?? "");
+      setIsRight(editingAnswer.isRight ?? false); // pega o valor do objeto original
     } else if (visible) {
-
       setAnswerText("");
-      setRight(false);
-
+      setIsRight(false);
     }
   }, [visible, editingAnswer]);
 
   const saveNewAnswer = () => {
-    if (onSaveSuccess) {
-      onSaveSuccess({
-        text: answerText,
-        right: right,
-      });
-    }
+    // Cria um novo objeto copiando todos os campos do original
+    const newAnswer = new AnswerModel(
+      editingAnswer?.id ?? null,
+      answerText,           // texto pode ficar vazio
+      isRight,              // salva o valor correto
+      editingAnswer?.questionId ?? null,
+      editingAnswer?.type ?? null
+    );
 
+    if (onSaveSuccess) onSaveSuccess(newAnswer);
     onClose();
   };
 
@@ -49,8 +48,8 @@ export default function AnswerEditor({visible, onClose, onSaveSuccess, editingAn
 
           <Checkbox.Item
             label="É a resposta correta?"
-            status={right ? "checked" : "unchecked"}
-            onPress={() => setRight(!right)}
+            status={isRight ? "checked" : "unchecked"}
+            onPress={() => setIsRight(prev => !prev)} // alterna o valor corretamente
           />
 
           <View style={styles.buttonRow}>
@@ -69,46 +68,12 @@ export default function AnswerEditor({visible, onClose, onSaveSuccess, editingAn
 }
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#000000aa",
-  },
-  modalBox: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    width: "90%",
-  },
-  title: {
-    fontSize: 18,
-    marginBottom: 10,
-    fontWeight: "bold",
-  },
-  label: {
-    marginTop: 10,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 6,
-    padding: 10,
-    marginTop: 5,
-    marginBottom: 15,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 15,
-  },
-  button: {
-    backgroundColor: "#007bff",
-    padding: 10,
-    borderRadius: 6,
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
+  modalOverlay: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#000000aa" },
+  modalBox: { backgroundColor: "white", padding: 20, borderRadius: 10, width: "90%" },
+  title: { fontSize: 18, marginBottom: 10, fontWeight: "bold" },
+  label: { marginTop: 10 },
+  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 6, padding: 10, marginTop: 5, marginBottom: 15 },
+  buttonRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 15 },
+  button: { backgroundColor: "#007bff", padding: 10, borderRadius: 6 },
+  buttonText: { color: "white", fontWeight: "bold" },
 });
