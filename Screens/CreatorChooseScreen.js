@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import ThemeControler from "../Controller/ThemeController";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import InsertThemeComponent from "../Components/InsertThemeComponent.js";
+import styles from "../Styles/CreatorChooseScreenStyles.js";
 
 export default function CreatorChooseScreen({ navigation }) {
 
@@ -37,11 +38,11 @@ export default function CreatorChooseScreen({ navigation }) {
   }
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, marginBottom: 10 }}>Choose One</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Escolha um</Text>
 
       <TouchableOpacity onPress={openCreateModal} style={{ marginBottom: 20 }}>
-        <Text style={{ fontSize: 18, color: 'blue' }}>+ Novo Tema</Text>
+        <Text style={styles.buttonText}>+ Novo Tema</Text>
       </TouchableOpacity>
 
       <InsertThemeComponent
@@ -57,25 +58,29 @@ export default function CreatorChooseScreen({ navigation }) {
       />
 
       <ScrollView>
-        {  themeList.length > 0 ? (
+        { themeList.length > 0 ? (
           themeList.map((theme) => (
-            <View key={theme.id} style={{ marginBottom: 15 }}>
+            <View key={theme.id} style={styles.themeItem}>
               <TouchableOpacity onPress={() => navigation.navigate("ChooseQuestionEditorScreen", {theme})}>
-                <Text style={{ fontSize: 18 }}>{theme.name }</Text>
+                <Text style={styles.themeName}>{theme.name }</Text>
               </TouchableOpacity>
+              
+              <View style = {styles.buttonGroup}>
+                <TouchableOpacity onPress={() => openEditModal(theme)}
+                  style = {[styles.button, styles.buttonRename]}>
+                  <Text style={styles.textRename}>Rename</Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={async () => {
-                  await themeControler.Delete(theme.id);
-                  await RetriveThemes();
-                }}
-              >
-                <Text style={{ color: 'red' }}>Delete</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => openEditModal(theme)}>
-                <Text style={{ color: 'green' }}>Rename</Text>
-              </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={async () => {
+                    await themeControler.Delete(theme.id);
+                    await RetriveThemes();
+                  }}
+                  style = {[styles.button, styles.buttonDelete]}
+                >
+                  <Text style={styles.textDelete}>Delete</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ))
         ) : (

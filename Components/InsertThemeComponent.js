@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Modal, View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
 import ThemeControler from "../Controller/ThemeController";
+import styles from "../Styles/InsertThemeComponentStyles.js"
 
-export default function InsertThemeComponent({ visible, onClose, onSaveSuccess, editingTheme }) {
+export default function InsertThemeComponent({ visible, onClose, onSaveSuccess, editingTheme, modalStyle }) {
   const [themeName, setThemeName] = useState("");
   const themeControler = new ThemeControler();
 
@@ -30,25 +31,31 @@ export default function InsertThemeComponent({ visible, onClose, onSaveSuccess, 
     }
   }
 
- return (
+  return (
     <Modal animationType="slide" transparent={true} visible={visible}>
-      <View style={{ flex:1, justifyContent:'center', alignItems:'center', backgroundColor:'#000000aa' }}>
-        <View style={{ backgroundColor:'white', padding:20, borderRadius:10 }}>
-          <Text>{editingTheme ? "Renomear Tema" : "Criar Novo Tema"}</Text>
+      <View style={styles.modalBackdrop}>
+        <View style={[styles.modalContainer, modalStyle]}>
+          <Text style={styles.title}>
+            {editingTheme ? "Renomear Tema" : "Criar Novo Tema"}
+          </Text>
 
-          <Text>Nome</Text>
+          <Text style={styles.label}>Nome</Text>
           <TextInput
             value={themeName}
             onChangeText={setThemeName}
+            placeholder="Digite o nome do tema"
+            style={styles.input}
           />
 
-          <TouchableOpacity onPress={onClose}>
-            <Text>Fechar</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonGroup}>
+            <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancelButton]}>
+              <Text style={styles.cancelText}>Fechar</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity onPress={saveNewTheme}>
-            <Text>Salvar</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={saveNewTheme} style={[styles.button, styles.saveButton]}>
+              <Text style={styles.saveText}>Salvar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
