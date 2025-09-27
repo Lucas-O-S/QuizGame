@@ -12,9 +12,11 @@ export default class QuestionService{
 
         async GetById (id) {
             const register = await this.#dao.GetById(id);
+            console.log(register)
+
             if(!register) throw new error("Não foi encontrado no banco");
             
-            const model = new QuestionModel(register.id, register.questionText, register.themeId);
+            const model = new QuestionModel(register.id, register.questionText, register.themeId, register.type);
             return model;
         }
     

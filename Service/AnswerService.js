@@ -48,12 +48,6 @@ export default class AnswerService{
 
     async Update(model){
 
-        console.log([
-            model.id,
-            model.isRight,
-            model.text,
-            model.questionId
-        ])
 
         const result = await this.#dao.Update(model);
         if(!result) throw new Error("Não foi possível atualizar a resposta");

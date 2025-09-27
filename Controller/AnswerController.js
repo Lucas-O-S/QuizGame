@@ -33,6 +33,7 @@ export default class AnswerController{
 
     async Update(model){
         try{
+            console.log(model.questionId)
             await this.#service.Update(model);
             return true;
         }

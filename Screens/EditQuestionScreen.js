@@ -51,7 +51,7 @@ export default function EditQuestionScreen({ navigation, route }) {
         const question = await questionController.GetById(questionId);
         
         if (!question) navigation.goBack();
-
+        console.log("O tipo da questão: " + question.type)
         setChecked(question.type)
         setQuestionName(question.text);
 
@@ -172,10 +172,12 @@ export default function EditQuestionScreen({ navigation, route }) {
       if(questionId){
         await questionController.Update(new QuestionModel(questionId,questionText, theme.id, checked))
         for (let answer of answers) {
-          await answerControler.Update(new AnswerModel(answer.id, answer.text, answer.isRight, checked, Number(questionId)));
+          console.log(questionId)
+          await answerControler.Update(new AnswerModel(answer.id, answer.text, answer.isRight, answer.questionId, answer.type));
         }
       }
       else{
+        console.log("Tem que ser TouF :" + checked)
         const newQuestionId = await questionController.Insert(questionText, theme.id, checked);
         for (let answer of answers) {
           await answerControler.Insert(answer.text, answer.isRight, checked, Number(newQuestionId));
@@ -200,20 +202,7 @@ export default function EditQuestionScreen({ navigation, route }) {
         style={styles.input}
       />
 
-      <View>
-        <RadioButton.Item
-          label="Alternativa"
-          value="alternativa"
-          status={checked === "alternativa" ? "checked" : "unchecked"}
-          onPress={() => setChecked("alternativa")}
-        />
-        <RadioButton.Item
-          label="Verdadeiro/Falso"
-          value="TrueFalse"
-          status={checked === "TrueFalse" ? "checked" : "unchecked"}
-          onPress={() => setChecked("TrueFalse")}
-        />
-      </View>
+
 
       <AnswerEditor
         visible={modalVisible}
@@ -241,6 +230,25 @@ export default function EditQuestionScreen({ navigation, route }) {
         }}
       />
 
+      {
+        !questionId && (
+          <View>
+            <RadioButton.Item
+              label="Alternativa"
+              value="alternativa"
+              status={checked === "alternativa" ? "checked" : "unchecked"}
+              onPress={() => setChecked("alternativa")}
+            />
+            <RadioButton.Item
+              label="Verdadeiro/Falso"
+              value="TrueFalse"
+              status={checked === "TrueFalse" ? "checked" : "unchecked"}
+              onPress={() => setChecked("TrueFalse")}
+            />
+          </View>
+        )
+      }
+        
       <View style={styles.answersContainer}>
         {checked === "alternativa" ? renderAlternatives() : renderTrueFalse()}
       </View>

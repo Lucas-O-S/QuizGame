@@ -7,7 +7,7 @@ export default class QuestionModel extends StandardModel{
     #type;
 
     // Construtor
-    constructor(id = null, text = "", themeId, type = "alternativa") {
+    constructor(id = null, text = "", themeId, type = "") {
         super(id);
         this.#text = text;
         this.#themeId = themeId;

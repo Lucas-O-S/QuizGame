@@ -25,9 +25,19 @@ export class AnswerDao extends StandardDAO{
     async Update(model){
         const connection = await DbHelper.GetConnection();
         const query = "update " + this.dbName + " set answer = ?, isRight = ?, type = ? where id = ?";
-        const result = await connection.execAsync(query, [model.text, model.isRight, model.type, model.id]);
+
+        const correctIsRight = model.isRight ? 1 : 0;
+        const result = await connection.runAsync(query, [model.text, correctIsRight, model.type, model.id]);
+        console.log("Chegou na dao")
+        console.log([
+            model.id,
+            model.isRight,
+            model.text,
+            model.questionId
+        ])
+        console.log("Mudou? " + result.changes)
         await connection.closeAsync();
-        return result == 1;
+        return result.changes == 1;
     }
 
     async GetByQuestionIdAndType(questionId, type) {
