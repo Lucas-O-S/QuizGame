@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
-import { Modal, View, Text, TouchableOpacity, TextInput, Alert } from "react-native";
+import { Modal, View, Text, TouchableOpacity, TextInput } from "react-native";
 import ThemeControler from "../Controller/ThemeController";
-import styles from "../Styles/InsertThemeComponentStyles.js"
+import styles from "../Styles/InsertThemeComponentStyles.js";
+import CustomAlert from "./CustomAlert"; // import do modal customizado
 
 export default function InsertThemeComponent({ visible, onClose, onSaveSuccess, editingTheme, modalStyle }) {
   const [themeName, setThemeName] = useState("");
   const themeControler = new ThemeControler();
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
 
   useEffect(() => {
     if (visible) {
@@ -24,40 +28,53 @@ export default function InsertThemeComponent({ visible, onClose, onSaveSuccess, 
     }
 
     if (result === true) {
-      Alert.alert("Salvo com sucesso");
-      setThemeName("");
-      onSaveSuccess?.();
-      onClose();
+      setAlertMessage("Salvo com sucesso!");
+      setAlertVisible(true);
     }
   }
 
+  function handleAlertConfirm() {
+    setAlertVisible(false);
+    setThemeName("");
+    onSaveSuccess?.();
+    onClose();
+  }
+
   return (
-    <Modal animationType="slide" transparent={true} visible={visible}>
-      <View style={styles.modalBackdrop}>
-        <View style={[styles.modalContainer, modalStyle]}>
-          <Text style={styles.title}>
-            {editingTheme ? "Renomear Tema" : "Criar Novo Tema"}
-          </Text>
+    <>
+      <Modal animationType="slide" transparent={true} visible={visible}>
+        <View style={styles.modalBackdrop}>
+          <View style={[styles.modalContainer, modalStyle]}>
+            <Text style={styles.title}>
+              {editingTheme ? "Renomear Tema" : "Criar Novo Tema"}
+            </Text>
 
-          <Text style={styles.label}>Nome</Text>
-          <TextInput
-            value={themeName}
-            onChangeText={setThemeName}
-            placeholder="Digite o nome do tema"
-            style={styles.input}
-          />
+            <Text style={styles.label}>Nome</Text>
+            <TextInput
+              value={themeName}
+              onChangeText={setThemeName}
+              placeholder="Digite o nome do tema"
+              style={styles.input}
+            />
 
-          <View style={styles.buttonGroup}>
-            <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancelButton]}>
-              <Text style={styles.cancelText}>Fechar</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonGroup}>
+              <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancelButton]}>
+                <Text style={styles.cancelText}>Fechar</Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={saveNewTheme} style={[styles.button, styles.saveButton]}>
-              <Text style={styles.saveText}>Salvar</Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={saveNewTheme} style={[styles.button, styles.saveButton]}>
+                <Text style={styles.saveText}>Salvar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+
+      <CustomAlert
+        visible={alertVisible}
+        message={alertMessage}
+        onConfirm={handleAlertConfirm}
+      />
+    </>
   );
 }

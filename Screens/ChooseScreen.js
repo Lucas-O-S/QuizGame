@@ -1,13 +1,11 @@
 import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useState } from "react";
+import { ScrollView, View, Text, TouchableOpacity, BackHandler } from "react-native";
 import ThemeControler from "../Controller/ThemeController";
-import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import InsertThemeComponent from "../Components/InsertThemeComponent.js";
 import styles from "../Styles/CreatorChooseScreenStyles.js";
 
 export default function CreatorChooseScreen({ navigation }) {
-  
-  
   const [themeList, setThemeList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTheme, setEditingTheme] = useState(null);
@@ -21,11 +19,18 @@ export default function CreatorChooseScreen({ navigation }) {
 
   useFocusEffect(
     useCallback(() => {
-      async function fetchThemes() {
-        await RetriveThemes();
-      }
-      fetchThemes();
-    }, [])
+      // carrega os temas
+      RetriveThemes();
+
+      // listener de hardware back
+      const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
+        navigation.navigate("StartScreen"); // força voltar para StartScreen
+        return true; // bloqueia comportamento padrão
+      });
+
+      // cleanup
+      return () => subscription.remove();
+    }, [navigation])
   );
 
   return (
@@ -45,16 +50,14 @@ export default function CreatorChooseScreen({ navigation }) {
       />
 
       <ScrollView>
-        { themeList.length > 0 ? (
+        {themeList.length > 0 ? (
           themeList.map((theme) => (
             <View key={theme.id} style={styles.themeItem}>
-              <TouchableOpacity onPress={() => navigation.navigate("StartGameScreen", {theme})}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("StartGameScreen", { theme })}
+              >
                 <Text style={styles.themeName}>{theme.name}</Text>
               </TouchableOpacity>
-              
-              <View style = {styles.buttonGroup}>
-
-              </View>
             </View>
           ))
         ) : (

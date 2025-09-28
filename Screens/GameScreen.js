@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 
 import QuestionController from "../Controller/QuestionController";
 import AnswerControler from "../Controller/AnswerController";
+import CustomAlert from "../Components/CustomAlert"; // import do modal customizado
 
 export default function GameScreen({ navigation, route }) {
   const questionController = new QuestionController();
@@ -16,11 +17,16 @@ export default function GameScreen({ navigation, route }) {
   const [errors, setErrors] = useState(0);
 
   const [answerArray, setAnswerArray] = useState([]);
-  const [choice, setChoice] = useState(-1); // índice da resposta escolhida
-  const [answered, setAnswered] = useState(false); // se já respondeu
+  const [choice, setChoice] = useState(-1);
+  const [answered, setAnswered] = useState(false);
 
   const question = questionArray[index];
   const [checked, setChecked] = useState("alternativa");
+
+  // CustomAlert estados
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [onConfirmAlert, setOnConfirmAlert] = useState(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -30,47 +36,33 @@ export default function GameScreen({ navigation, route }) {
         const answers = await answerControler.GetByQuestionIdAndType(question.id, question.type);
         setAnswerArray(answers);
         setChecked(question.type);
-        setChoice(-1); 
-        setAnswered(false); 
+        setChoice(-1);
+        setAnswered(false);
       }
 
       loadAnswers();
     }, [index])
   );
 
-  // Seleciona resposta
   function selectAnswer(i) {
-    if (answered) return; // não permite mudar após responder
+    if (answered) return;
     setChoice(i);
   }
 
-  // Confirmar ou seguir
   function handleConfirm() {
     if (!answered) {
-      if (choice === -1) return; // nada selecionado
+      if (choice === -1) return;
       const selected = answerArray[choice];
-      const correctAnswer = answerArray.find(a => a.isRight);
-
-      if (selected.isRight) {
-        setScore(score + 1);
-      } else {
-        setErrors(errors + 1);
-      }
-
+      if (selected.isRight) setScore(score + 1);
+      else setErrors(errors + 1);
       setAnswered(true);
     } else {
-      // Avança para próxima pergunta
-      if (index + 1 < questionArray.length) {
-        setIndex(index + 1);
-      } else {
-        navigation.navigate("GameEndScreen", {score, errors, totalQuestions : questionArray.length}); // ou tela de resultados
-      }
+      if (index + 1 < questionArray.length) setIndex(index + 1);
+      else navigation.navigate("GameEndScreen", {score, errors, totalQuestions: questionArray.length});
     }
   }
 
-  // Renderiza alternativas
   function renderAlternatives() {
-    const correctAnswer = answerArray.find(a => a.isRight);
     return answerArray.map((answer, i) => {
       let style = [styles.answerBox];
       if (answered) {
@@ -90,7 +82,6 @@ export default function GameScreen({ navigation, route }) {
   }
 
   function renderTrueFalse() {
-    const correctAnswer = answerArray.find(a => a.isRight);
     return answerArray.map((answer, i) => {
       let style = [styles.answerBox];
       if (answered) {
@@ -134,6 +125,28 @@ export default function GameScreen({ navigation, route }) {
           <Text style={styles.buttonText}>{answered ? "Próxima" : "Confirmar"}</Text>
         </TouchableOpacity>
       </View>
+
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            setAlertMessage("Tem certeza que deseja desistir? Sua pontuação será perdida.");
+            setOnConfirmAlert(() => () => {
+              setAlertVisible(false);
+              navigation.navigate("ChooseScreen");
+            });
+            setAlertVisible(true);
+          }}
+          style={[styles.button, { backgroundColor: "#dc3545", marginTop: 10 }]}
+        >
+          <Text style={styles.buttonText}>Cancelar</Text>
+        </TouchableOpacity>
+      </View>
+      <CustomAlert
+        visible={alertVisible}
+        message={alertMessage}
+        onConfirm={onConfirmAlert}
+        onCancel={() => setAlertVisible(false)} // mantém botão cancelar dentro do modal
+      />
     </ScrollView>
   );
 }

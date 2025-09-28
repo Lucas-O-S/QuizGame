@@ -53,7 +53,7 @@ export default function GameEndScreen({ navigation, route }) {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("StartScreen")}
+        onPress={() => navigation.navigate("ChooseScreen")}
       >
         <Text style={styles.buttonText}>Voltar ao Início</Text>
       </TouchableOpacity>

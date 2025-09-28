@@ -3,13 +3,16 @@ import { useCallback, useState } from "react";
 import ThemeController from "../Controller/ThemeController";
 import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import InsertThemeComponent from "../Components/InsertThemeComponent.js";
+import CustomAlert from "../Components/CustomAlert.js"; // modal customizado
 import styles from "../Styles/CreatorChooseScreenStyles.js";
 
 export default function CreatorChooseScreen({ navigation }) {
-
   const [themeList, setThemeList] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingTheme, setEditingTheme] = useState(null);
+
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [themeToDelete, setThemeToDelete] = useState(null);
 
   const themeControler = new ThemeController();
 
@@ -27,33 +30,28 @@ export default function CreatorChooseScreen({ navigation }) {
     }, [])
   );
 
-    function CallDelete(id) {
-      Alert.alert(
-        "Confirmar exclusão",
-        "Deseja realmente excluir?",
-        [
-          { text: "Cancelar", style: "cancel" },
-          { 
-            text: "Excluir", 
-            style: "destructive",
-            onPress: async () => {
-              await ThemeController.Delete(id);
-              await RetriveThemes();
-            } 
-          },
-        ],
-        { cancelable: true }
-      );
-    };
-
   function openCreateModal() {
-    setEditingTheme(null);       // criando um novo tema
+    setEditingTheme(null);
     setModalVisible(true);
   }
 
   function openEditModal(theme) {
-    setEditingTheme(theme);      // editando tema existente
+    setEditingTheme(theme);
     setModalVisible(true);
+  }
+
+  function CallDelete(id) {
+    setThemeToDelete(id);
+    setAlertVisible(true);
+  }
+
+  async function handleConfirmDelete() {
+    if (themeToDelete !== null) {
+      await themeControler.Delete(themeToDelete);
+      await RetriveThemes();
+      setThemeToDelete(null);
+    }
+    setAlertVisible(false);
   }
 
   return (
@@ -77,25 +75,28 @@ export default function CreatorChooseScreen({ navigation }) {
       />
 
       <ScrollView>
-        { themeList.length > 0 ? (
+        {themeList.length > 0 ? (
           themeList.map((theme) => (
             <View key={theme.id} style={styles.themeItem}>
-              <TouchableOpacity onPress={() => navigation.navigate("ChooseQuestionEditorScreen", {theme})}>
-                <Text style={styles.themeName}>{theme.name }</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("ChooseQuestionEditorScreen", { theme })
+                }
+              >
+                <Text style={styles.themeName}>{theme.name}</Text>
               </TouchableOpacity>
-              
-              <View style = {styles.buttonGroup}>
-                <TouchableOpacity onPress={() => openEditModal(theme)}
-                  style = {[styles.button, styles.buttonRename]}>
+
+              <View style={styles.buttonGroup}>
+                <TouchableOpacity
+                  onPress={() => openEditModal(theme)}
+                  style={[styles.button, styles.buttonRename]}
+                >
                   <Text style={styles.textRename}>Rename</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={async () => {
-                    await CallDelete(theme.id);
-                    await RetriveThemes();
-                  }}
-                  style = {[styles.button, styles.buttonDelete]}
+                  onPress={() => CallDelete(theme.id)}
+                  style={[styles.button, styles.buttonDelete]}
                 >
                   <Text style={styles.textDelete}>Delete</Text>
                 </TouchableOpacity>
@@ -106,6 +107,14 @@ export default function CreatorChooseScreen({ navigation }) {
           <Text>Nenhum tema encontrado</Text>
         )}
       </ScrollView>
+
+      <CustomAlert
+        visible={alertVisible}
+        title="Confirmar exclusão"
+        message="Deseja realmente excluir?"
+        onCancel={() => setAlertVisible(false)}
+        onConfirm={handleConfirmDelete}
+      />
     </View>
   );
 }
