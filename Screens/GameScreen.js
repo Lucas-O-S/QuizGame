@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 
 import QuestionController from "../Controller/QuestionController";
 import AnswerControler from "../Controller/AnswerController";
-import CustomAlert from "../Components/CustomAlert"; // import do modal customizado
+import CustomAlert from "../Components/CustomAlert"; 
 
 export default function GameScreen({ navigation, route }) {
   const questionController = new QuestionController();
