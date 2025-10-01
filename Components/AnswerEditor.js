@@ -8,11 +8,10 @@ export default function AnswerEditor({ visible, onClose, onSaveSuccess, editingA
   const [answerText, setAnswerText] = useState("");
   const [isRight, setIsRight] = useState(false);
 
-  // Sempre atualiza quando o modal abre ou o editingAnswer muda
   useEffect(() => {
     if (visible && editingAnswer instanceof AnswerModel) {
       setAnswerText(editingAnswer.text ?? "");
-      setIsRight(editingAnswer.isRight ?? false); // pega o valor do objeto original
+      setIsRight(editingAnswer.isRight ?? false); 
     } else if (visible) {
       setAnswerText("");
       setIsRight(false);
@@ -20,11 +19,10 @@ export default function AnswerEditor({ visible, onClose, onSaveSuccess, editingA
   }, [visible, editingAnswer]);
 
   const saveNewAnswer = () => {
-    // Cria um novo objeto copiando todos os campos do original
     const newAnswer = new AnswerModel(
       editingAnswer?.id ?? null,
-      answerText,           // texto pode ficar vazio
-      isRight,              // salva o valor correto
+      answerText,           
+      isRight,              
       editingAnswer?.questionId ?? null,
       editingAnswer?.type ?? null
     );

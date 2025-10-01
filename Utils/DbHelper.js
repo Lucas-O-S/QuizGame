@@ -22,7 +22,7 @@ export class DbHelper {
             questionText TEXT NOT NULL,
             ThemeId INTEGER NOT NULL,
             type TEXT NOT NULL,
-            FOREIGN KEY(ThemeId) REFERENCES tbTheme(id)
+            FOREIGN KEY(ThemeId) REFERENCES tbTheme(id)  ON DELETE CASCADE
         )`;
 
         const connection = await this.GetConnection();
@@ -37,7 +37,7 @@ export class DbHelper {
             isRight INTEGER not null,
             type TEXT NOT NULL,
             questionId INTEGER NOT NULL,
-            FOREIGN KEY(questionId) REFERENCES tbQuestion(id)
+            FOREIGN KEY(questionId) REFERENCES tbQuestion(id)  ON DELETE CASCADE
         )`;
 
         const connection = await this.GetConnection();
