@@ -1,5 +1,7 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Dimensions } from "react-native";
 import { PieChart } from "react-native-chart-kit";
+import styles from "../Styles/GameEndScreenStyles";
+import Colors from "../Styles/Colors";
 
 export default function GameEndScreen({ navigation, route }) {
   const { score = 0, errors = 0, totalQuestions = 0 } = route.params ?? {};
@@ -8,15 +10,15 @@ export default function GameEndScreen({ navigation, route }) {
     {
       name: "Acertos",
       population: score,
-      color: "#4caf50",
-      legendFontColor: "#333",
+      color: Colors.secondary,
+      legendFontColor: Colors.textPrimary,
       legendFontSize: 16,
     },
     {
       name: "Erros",
       population: errors,
-      color: "#f44336",
-      legendFontColor: "#333",
+      color: Colors.primary,
+      legendFontColor: Colors.textPrimary,
       legendFontSize: 16,
     },
   ];
@@ -30,9 +32,9 @@ export default function GameEndScreen({ navigation, route }) {
         width={Dimensions.get("window").width - 40} // ajusta à largura da tela
         height={220}
         chartConfig={{
-          backgroundColor: "#fff",
-          backgroundGradientFrom: "#fff",
-          backgroundGradientTo: "#fff",
+          backgroundColor: Colors.background,
+          backgroundGradientFrom: Colors.background,
+          backgroundGradientTo: Colors.background,
           color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
           labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
         }}
@@ -60,47 +62,3 @@ export default function GameEndScreen({ navigation, route }) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#f5f5f5",
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 30,
-    color: "#333",
-  },
-  statsContainer: {
-    width: "100%",
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    marginBottom: 30,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  statText: {
-    fontSize: 18,
-    marginBottom: 10,
-    color: "#555",
-  },
-  button: {
-    backgroundColor: "#007bff",
-    padding: 15,
-    borderRadius: 8,
-    width: "100%",
-    alignItems: "center",
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-});

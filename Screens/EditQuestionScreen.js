@@ -1,5 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { ScrollView, Text, TouchableOpacity, TextInput, StyleSheet, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, TextInput, View } from "react-native";
 import { useCallback, useState } from "react";
 import { RadioButton } from "react-native-paper";
 
@@ -9,6 +9,7 @@ import AnswerControler from "../Controller/AnswerController";
 import AnswerModel from "../Models/AnswerModel";
 import QuestionModel from "../Models/QuestionModel";
 import CustomAlert from "../Components/CustomAlert"; // import do modal customizado
+import styles from '../Styles/EditQuestionScreenStyles';
 
 export default function EditQuestionScreen({ navigation, route }) {
   const questionController = new QuestionController();
@@ -185,6 +186,11 @@ export default function EditQuestionScreen({ navigation, route }) {
       contentContainerStyle={[styles.container, { paddingBottom: 100 }]}
       keyboardShouldPersistTaps="handled"
     >
+
+      <Text style={styles.title}>
+        {questionId ? "Editar Questão" : "Nova Questão"}
+      </Text>
+
       <TextInput
         value={questionText}
         onChangeText={setQuestionName}
@@ -219,13 +225,15 @@ export default function EditQuestionScreen({ navigation, route }) {
       />
 
       {!questionId && (
-        <View>
+        <View style={styles.radioGroup}>
           <RadioButton.Item
             label="Alternativa"
             value="alternativa"
             status={checked === "alternativa" ? "checked" : "unchecked"}
             onPress={() => setChecked("alternativa")}
           />
+          <View style={styles.divider} />
+          <View style={styles.radioItem}></View>
           <RadioButton.Item
             label="Verdadeiro/Falso"
             value="TrueFalse"
@@ -253,34 +261,3 @@ export default function EditQuestionScreen({ navigation, route }) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { padding: 20 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 6,
-    marginBottom: 20,
-  },
-  answersContainer: { marginTop: 20 },
-  answerBox: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 6,
-    marginBottom: 10,
-    backgroundColor: "#f9f9f9",
-  },
-  answerLabel: { fontWeight: "bold" },
-  answerText: { marginTop: 4, color: "#333" },
-  button: {
-    backgroundColor: "#007bff",
-    padding: 12,
-    borderRadius: 6,
-    marginTop: 10,
-    alignItems: "center",
-  },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-});

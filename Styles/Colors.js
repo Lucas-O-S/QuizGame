@@ -1,8 +1,11 @@
 export default {
-    primary: '#6e80c5ff',
-    secondary: '#96C99C',
-    background: '#ffe6e6ff',
-    textPrimary: '#000000ff',
-    textSecondary: '#cececeff',
-    shadowColor: '#000',
+    primary: "#ff6b6b",
+    primaryDark: "#e55a5a",
+    secondary: "#6c5ce7",
+    background: "#fdf6f0",
+    surface: "#ffffff",
+    border: "#dfe6e9",
+    textPrimary: "#2d3436",
+    textSecondary: "#636e72",
+    shadowColor: "#000000",
 };

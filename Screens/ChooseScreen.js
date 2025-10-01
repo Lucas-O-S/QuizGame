@@ -4,8 +4,8 @@ import { ScrollView, View, Text, TouchableOpacity, BackHandler } from "react-nat
 import ThemeControler from "../Controller/ThemeController";
 import InsertThemeComponent from "../Components/InsertThemeComponent.js";
 import SelectQuestionCountModal from "../Components/SelectQuestionCountModal.js"; // import do modal
-import styles from "../Styles/CreatorChooseScreenStyles.js";
 import QuestionController from "../Controller/QuestionController.js";
+import styles from "../Styles/ChooseScreenStyles.js";
 
 export default function CreatorChooseScreen({ navigation }) {
   const [themeList, setThemeList] = useState([]);
@@ -62,8 +62,19 @@ export default function CreatorChooseScreen({ navigation }) {
   }
 
   return (
+    <View style={{ flex: 1 }}>
+    <View style={styles.backgroundGrid}>
+      {Array.from({ length: 50 }).map((_, i) => (
+        <View key={`h-${i}`} style={[styles.horizontalLine, { top: i * 40 }]} />
+      ))}
+
+      {Array.from({ length: 20 }).map((_, i) => (
+        <View key={`v-${i}`} style={[styles.verticalLine, { left: i * 40 }]} />
+      ))}
+    </View>
+
     <View style={styles.container}>
-      <Text style={styles.title}>Escolha um</Text>
+      <Text style={styles.title}>Escolha um Tema {'\n'} para Jogar</Text>
 
       <InsertThemeComponent
         visible={modalVisible}
@@ -77,7 +88,7 @@ export default function CreatorChooseScreen({ navigation }) {
         }}
       />
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         {themeList.length > 0 ? (
           themeList.map((theme) => (
             <View key={theme.id} style={styles.themeItem}>
@@ -89,7 +100,7 @@ export default function CreatorChooseScreen({ navigation }) {
             </View>
           ))
         ) : (
-          <Text>Nenhum tema encontrado</Text>
+          <Text style={styles.emptyText}>Nenhum tema encontrado</Text>
         )}
       </ScrollView>
 
@@ -99,6 +110,7 @@ export default function CreatorChooseScreen({ navigation }) {
         onClose={() => setModalQuestionVisible(false)}
         onConfirm={handleConfirmQuestionCount}
       />
+    </View>
     </View>
   );
 }

@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import BaseStyles from "./BaseStyles";
 import Colors from "./Colors";
 
 const styles = StyleSheet.create({
@@ -7,30 +6,41 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#000000aa",
+        backgroundColor: "rgba(0,0,0,0.5)",
     },
     modalContainer: {
-        backgroundColor: "#fffbfbff",
-        padding: 20,
-        borderRadius: 10,
-        width: "80%",
+        backgroundColor: Colors.surface ?? "#fff",
+        padding: 24,
+        borderRadius: 16,
+        width: "85%",
+        shadowColor: Colors.shadowColor ?? "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 6,
     },
     title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        marginBottom: 15,
+        fontSize: 22,
+        fontWeight: "700",
+        marginBottom: 20,
         textAlign: "center",
+        color: Colors.primary,
     },
     label: {
-        marginBottom: 5,
+        marginBottom: 8,
         fontWeight: "600",
+        color: Colors.textPrimary,
+        fontSize: 16,
     },
     input: {
         borderWidth: 1,
-        borderColor: "#858585ff",
-        borderRadius: 6,
-        padding: 10,
-        marginBottom: 20,
+        borderColor: Colors.border ?? "#ccc",
+        borderRadius: 10,
+        padding: 14,
+        marginBottom: 24,
+        backgroundColor: Colors.surface,
+        fontSize: 16,
+        color: Colors.textPrimary,
     },
     buttonGroup: {
         flexDirection: "row",
@@ -38,24 +48,31 @@ const styles = StyleSheet.create({
     },
     button: {
         flex: 1,
-        paddingVertical: 12,
-        borderRadius: 8,
+        paddingVertical: 14,
+        borderRadius: 12,
         alignItems: "center",
-        marginHorizontal: 5,
+        marginHorizontal: 6,
+        shadowColor: Colors.primaryDark ?? "#357ABD",
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.25,
+        shadowRadius: 6,
+        elevation: 4,
     },
     cancelButton: {
         backgroundColor: Colors.primary,
     },
     cancelText: {
-        color: "#001438ff",
-        fontWeight: "600",
+        color: Colors.surface,
+        fontWeight: "700",
+        fontSize: 16,
     },
     saveButton: {
-        backgroundColor: "#75c978ff",
+        backgroundColor: Colors.secondary,
     },
     saveText: {
-        color: "#084e09ff",
-        fontWeight: "600",
+        color: Colors.surface,
+        fontWeight: "700",
+        fontSize: 16,
     },
 });
 

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Modal, View, Text, TouchableOpacity, TextInput, StyleSheet } from "react-native";
+import { Modal, View, Text, TouchableOpacity, TextInput } from "react-native";
 import { Checkbox } from "react-native-paper";
 import AnswerModel from "../Models/AnswerModel";
+import styles from "../Styles/AnswerEditorStyles";
 
 export default function AnswerEditor({ visible, onClose, onSaveSuccess, editingAnswer }) {
   const [answerText, setAnswerText] = useState("");
@@ -35,7 +36,7 @@ export default function AnswerEditor({ visible, onClose, onSaveSuccess, editingA
   return (
     <Modal animationType="slide" transparent={true} visible={visible}>
       <View style={styles.modalOverlay}>
-        <View style={styles.modalBox}>
+        <View style={styles.modalContainer}>
           <Text style={styles.title}>Alterar Resposta</Text>
 
           <Text style={styles.label}>Texto da resposta</Text>
@@ -55,13 +56,13 @@ export default function AnswerEditor({ visible, onClose, onSaveSuccess, editingA
             onPress={() => setIsRight(prev => !prev)}
           />
 
-          <View style={styles.buttonRow}>
-            <TouchableOpacity onPress={onClose} style={styles.button}>
-              <Text style={styles.buttonText}>Fechar</Text>
+          <View style={styles.buttonGroup}>
+            <TouchableOpacity onPress={onClose} style={[styles.button, styles.cancelButton]}>
+              <Text style={styles.cancelText}>Fechar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={saveNewAnswer} style={styles.button}>
-              <Text style={styles.buttonText}>Salvar</Text>
+            <TouchableOpacity onPress={saveNewAnswer} style={[styles.button, styles.saveButton]}>
+              <Text style={styles.saveText}>Salvar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -69,14 +70,3 @@ export default function AnswerEditor({ visible, onClose, onSaveSuccess, editingA
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  modalOverlay: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#000000aa" },
-  modalBox: { backgroundColor: "white", padding: 20, borderRadius: 10, width: "90%" },
-  title: { fontSize: 18, marginBottom: 10, fontWeight: "bold" },
-  label: { marginTop: 10 },
-  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 6, padding: 10, marginTop: 5, marginBottom: 15 },
-  buttonRow: { flexDirection: "row", justifyContent: "space-between", marginTop: 15 },
-  button: { backgroundColor: "#007bff", padding: 10, borderRadius: 6 },
-  buttonText: { color: "white", fontWeight: "bold" },
-});
