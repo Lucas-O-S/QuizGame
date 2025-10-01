@@ -58,10 +58,10 @@ const styles = StyleSheet.create({
         marginHorizontal: 6,
     },
     cancel: {
-        backgroundColor: Colors.secondaryLight,
+        backgroundColor: Colors.primary,
     },
     confirm: {
-        backgroundColor: Colors.primary,
+        backgroundColor: Colors.secondary,
     },
     cancelText: {
         color: Colors.surface,

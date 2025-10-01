@@ -90,7 +90,7 @@ export default function CreatorChooseScreen({ navigation }) {
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {themeList.length > 0 ? (
-          themeList.map((theme) => (
+          themeList.filter(theme => (questionsCount[theme.id] ?? 0) > 0).map((theme) => (
             <View key={theme.id} style={styles.themeItem}>
               <TouchableOpacity onPress={() => openQuestionCountModal(theme)}>
                 <Text style={styles.themeName}>
