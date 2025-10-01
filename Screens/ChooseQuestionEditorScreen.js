@@ -3,6 +3,9 @@ import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import QuestionController from "../Controller/QuestionController";
 import { useCallback, useState } from "react";
 import CustomAlert from "../Components/CustomAlert";
+import styles from '../Styles/ChooseQuestionEditorScreenStyles';
+import Colors from '../Styles/Colors';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function ChooseQuestionEditorScreen({ navigation, route }) {
   const [questionlist, setQuestionList] = useState([]);
@@ -41,35 +44,39 @@ export default function ChooseQuestionEditorScreen({ navigation, route }) {
   }
 
   return (
-    <View style={{ padding: 20 }}>
-      <Text style={{ fontSize: 24, marginBottom: 10 }}>Escolha uma Questão</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Escolha uma Questão</Text>
 
       <TouchableOpacity
         onPress={() => navigation.navigate("EditQuestionScreen", { theme })}
-        style={{ marginBottom: 20 }}
+        style={styles.newQuestionButton}
       >
-        <Text style={{ fontSize: 18, color: "blue" }}>+ Nova Questão</Text>
+        <Text style={styles.newQuestionButtonText}>+ Nova Questão</Text>
       </TouchableOpacity>
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         {questionlist.length > 0 ? (
           questionlist.map((question) => (
-            <View key={question.id} style={{ marginBottom: 15 }}>
+            <View key={question.id} style={styles.card}>
               <TouchableOpacity
+                style={styles.questionContainer}
                 onPress={() =>
                   navigation.navigate("EditQuestionScreen", { theme, questionId: question.id })
                 }
               >
-                <Text style={{ fontSize: 18 }}>{question.text}</Text>
+                <Text style={styles.questionText}>{question.text}</Text>
               </TouchableOpacity>
+              
+              <View style={styles.divider} />
 
-              <TouchableOpacity onPress={() => CallDelete(question.id)}>
-                <Text style={{ color: "red" }}>Delete</Text>
+              <TouchableOpacity onPress={() => CallDelete(question.id)} style={styles.deleteButton}>
+                <FontAwesome5 name="trash" size={18} color={Colors.primary} style={{ marginRight: 8 }} />
+                <Text style={styles.deleteText}>Deletar</Text>
               </TouchableOpacity>
             </View>
           ))
         ) : (
-          <Text>Nenhuma questão encontrada</Text>
+          <Text style={styles.emptyText}>Nenhuma questão encontrada</Text>
         )}
       </ScrollView>
 

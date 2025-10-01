@@ -1,0 +1,85 @@
+import { StyleSheet } from 'react-native';
+import Colors from './Colors';
+
+const StartGameScreenStyles = StyleSheet.create({
+    bg: {
+        flex: 1,
+        backgroundColor: Colors.background,
+        padding: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 26,
+        fontWeight: '700',
+        color: Colors.textPrimary,
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    infoText: {
+        fontSize: 16,
+        color: Colors.textSecondary,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    container: {
+        width: '100%',
+        alignItems: 'center',
+        marginTop: 30,
+    },
+    button: {
+        backgroundColor: Colors.primary,
+        paddingVertical: 14,
+        paddingHorizontal: 25,
+        borderRadius: 10,
+        elevation: 3,
+        shadowColor: Colors.primaryDark,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        alignItems: 'center',
+        minWidth: 160,
+    },
+    buttonText: {
+        color: Colors.surface,
+        fontSize: 16,
+        fontWeight: '600',
+        letterSpacing: 0.5,
+    },
+        circleTopLeft: {
+        position: "absolute",
+        top: -60,
+        left: -60,
+        width: 140,
+        height: 140,
+        borderRadius: 70,
+        backgroundColor: Colors.primary,
+        opacity: 0.15,
+        zIndex: 1,
+    },
+    circleBottomRight: {
+        position: "absolute",
+        bottom: -80,
+        right: -80,
+        width: 180,
+        height: 180,
+        borderRadius: 90,
+        backgroundColor: Colors.secondary,
+        opacity: 0.15,
+        zIndex: 1,
+    },
+    diagonalLine: {
+        position: "absolute",
+        top: 50,
+        left: -50,
+        width: 300,
+        height: 4,
+        backgroundColor: Colors.primary,
+        opacity: 0.1,
+        transform: [{ rotate: "25deg" }],
+        borderRadius: 2,
+        zIndex: 1,
+    },
+});
+
+export default StartGameScreenStyles;

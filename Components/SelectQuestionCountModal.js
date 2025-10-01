@@ -1,5 +1,6 @@
-import { Modal, View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { Modal, View, Text, TextInput, TouchableOpacity } from "react-native";
 import { useState, useEffect } from "react";
+import styles from "../Styles/SelectQuestionCountModalStyles";
 
 export default function SelectQuestionCountModal({ visible, maxQuestions, onClose, onConfirm }) {
   const [inputValue, setInputValue] = useState("1");
@@ -21,7 +22,7 @@ export default function SelectQuestionCountModal({ visible, maxQuestions, onClos
   return (
     <Modal visible={visible} transparent animationType="slide">
       <View style={styles.backdrop}>
-        <View style={styles.container}>
+        <View style={styles.modal}>
           <Text style={styles.title}>Quantidade de perguntas</Text>
           <Text style={styles.subtitle}>Máximo disponível: {maxQuestions}</Text>
           <TextInput
@@ -33,10 +34,10 @@ export default function SelectQuestionCountModal({ visible, maxQuestions, onClos
           />
           <View style={styles.buttons}>
             <TouchableOpacity style={[styles.button, styles.cancel]} onPress={onClose}>
-              <Text style={styles.buttonText}>Cancelar</Text>
+              <Text style={styles.cancelText}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.button, styles.confirm]} onPress={handleConfirm}>
-              <Text style={styles.buttonText}>Confirmar</Text>
+              <Text style={styles.confirmText}>Confirmar</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -44,36 +45,3 @@ export default function SelectQuestionCountModal({ visible, maxQuestions, onClos
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    backgroundColor: "#00000080",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: {
-    width: "80%",
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    padding: 20,
-    alignItems: "center",
-  },
-  title: { fontSize: 18, fontWeight: "bold", marginBottom: 5 },
-  subtitle: { fontSize: 14, marginBottom: 15, color: "#555" },
-  input: {
-    width: "100%",
-    borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 6,
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  buttons: { flexDirection: "row", justifyContent: "flex-end", width: "100%" },
-  button: { paddingHorizontal: 15, paddingVertical: 10, borderRadius: 5, marginLeft: 10 },
-  cancel: { backgroundColor: "#ccc" },
-  confirm: { backgroundColor: "#007bff" },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-});

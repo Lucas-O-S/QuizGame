@@ -1,10 +1,11 @@
 import { useFocusEffect } from "@react-navigation/native";
-import { ScrollView, Text, TouchableOpacity, StyleSheet, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useCallback, useState } from "react";
 
 import QuestionController from "../Controller/QuestionController";
 import AnswerControler from "../Controller/AnswerController";
 import CustomAlert from "../Components/CustomAlert"; 
+import styles from '../Styles/GameScreenStyles';
 
 export default function GameScreen({ navigation, route }) {
   const questionController = new QuestionController();
@@ -69,7 +70,7 @@ export default function GameScreen({ navigation, route }) {
         if (answer.isRight) style.push({ borderColor: "green", borderWidth: 2 });
         if (i === choice && !answer.isRight) style.push({ borderColor: "red", borderWidth: 2 });
       } else if (i === choice) {
-        style.push({ borderColor: "#007bff", borderWidth: 2 });
+        style.push(styles.selectedAnswer);
       }
 
       return (
@@ -85,10 +86,10 @@ export default function GameScreen({ navigation, route }) {
     return answerArray.map((answer, i) => {
       let style = [styles.answerBox];
       if (answered) {
-        if (answer.isRight) style.push({ borderColor: "green", borderWidth: 2 });
-        if (i === choice && !answer.isRight) style.push({ borderColor: "red", borderWidth: 2 });
+        if (answer.isRight) style.push(styles.correctAnswer);
+        if (i === choice && !answer.isRight) style.push(styles.wrongAnswer);
       } else if (i === choice) {
-        style.push({ borderColor: "#007bff", borderWidth: 2 });
+        style.push(styles.selectedAnswer);
       }
 
       return (
@@ -99,23 +100,23 @@ export default function GameScreen({ navigation, route }) {
     });
   }
 
-  if (!question) return <Text>Carregando...</Text>;
+  if (!question) return <Text style={styles.loadingText}>Carregando...</Text>;
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { paddingBottom: 100 }]} keyboardShouldPersistTaps="handled">
       <View style={styles.statusContainer}>
-        <Text style={styles.statusText}>Pontuação: {score}</Text>
-        <Text style={styles.statusText}>Erros: {errors}</Text>
+        <Text style={styles.points}>Pontuação: {score}</Text>
+        <Text style={styles.errors}>Erros: {errors}</Text>
       </View>
 
-      <Text style={styles.input}>{question.text}</Text>
+      <Text style={styles.text}>{question.text}</Text>
 
       <View style={styles.answersContainer}>
         {checked === "alternativa" ? renderAlternatives() : renderTrueFalse()}
       </View>
 
       {answered && choice !== -1 && (
-        <Text style={{ marginTop: 10, fontWeight: "bold", fontSize: 16 }}>
+        <Text style={styles.feedbackText}>
           {answerArray[choice].isRight ? "Você acertou!" : `Errado! A resposta correta é: ${answerArray.find(a => a.isRight).text}`}
         </Text>
       )}
@@ -136,7 +137,7 @@ export default function GameScreen({ navigation, route }) {
             });
             setAlertVisible(true);
           }}
-          style={[styles.button, { backgroundColor: "#dc3545", marginTop: 10 }]}
+          style={[styles.button, styles.cancelButton]}
         >
           <Text style={styles.buttonText}>Cancelar</Text>
         </TouchableOpacity>
@@ -150,36 +151,3 @@ export default function GameScreen({ navigation, route }) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { padding: 20 },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: 6,
-    marginBottom: 20,
-  },
-  answersContainer: { marginTop: 20 },
-  answerBox: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 6,
-    marginBottom: 10,
-    backgroundColor: "#f9f9f9",
-  },
-  answerLabel: { fontWeight: "bold" },
-  answerText: { marginTop: 4, color: "#333" },
-  button: {
-    backgroundColor: "#007bff",
-    padding: 12,
-    borderRadius: 6,
-    marginTop: 10,
-    alignItems: "center",
-  },
-  buttonText: { color: "#fff", fontWeight: "bold" },
-  statusContainer: { flexDirection: "row", justifyContent: "space-between", marginBottom: 15 },
-  statusText: { fontSize: 16, fontWeight: "bold", color: "#333" },
-});

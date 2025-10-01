@@ -5,6 +5,7 @@ import { ScrollView, View, Text, TouchableOpacity } from "react-native";
 import InsertThemeComponent from "../Components/InsertThemeComponent.js";
 import CustomAlert from "../Components/CustomAlert.js"; // modal customizado
 import styles from "../Styles/CreatorChooseScreenStyles.js";
+import { FontAwesome5 } from '@expo/vector-icons';
 
 export default function CreatorChooseScreen({ navigation }) {
   const [themeList, setThemeList] = useState([]);
@@ -56,10 +57,23 @@ export default function CreatorChooseScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Escolha um</Text>
 
-      <TouchableOpacity onPress={openCreateModal} style={{ marginBottom: 20 }}>
-        <Text style={styles.buttonText}>+ Novo Tema</Text>
+    <View style={styles.backgroundGrid}>
+      {Array.from({ length: 50 }).map((_, i) => (
+        <View key={`h-${i}`} style={[styles.horizontalLine, { top: i * 40 }]} />
+      ))}
+
+      {Array.from({ length: 20 }).map((_, i) => (
+        <View key={`v-${i}`} style={[styles.verticalLine, { left: i * 40 }]} />
+      ))}
+    </View>
+
+      <Text style={styles.title}>Criação e Edição de Tema</Text>
+
+      <TouchableOpacity
+      onPress={openCreateModal}
+      style={styles.newThemeButton}>
+        <Text style={styles.newThemeButtonText}>+ Novo Tema</Text>
       </TouchableOpacity>
 
       <InsertThemeComponent
@@ -74,10 +88,10 @@ export default function CreatorChooseScreen({ navigation }) {
         }}
       />
 
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         {themeList.length > 0 ? (
           themeList.map((theme) => (
-            <View key={theme.id} style={styles.themeItem}>
+            <View key={theme.id} style={styles.themeCard}>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate("ChooseQuestionEditorScreen", { theme })
@@ -91,20 +105,22 @@ export default function CreatorChooseScreen({ navigation }) {
                   onPress={() => openEditModal(theme)}
                   style={[styles.button, styles.buttonRename]}
                 >
-                  <Text style={styles.textRename}>Rename</Text>
+                  <FontAwesome5 name="pen" size={14} color="#000766" style={{ marginRight: 6 }} />
+                  <Text style={styles.textRename}>Renomear</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   onPress={() => CallDelete(theme.id)}
                   style={[styles.button, styles.buttonDelete]}
                 >
-                  <Text style={styles.textDelete}>Delete</Text>
+                  <FontAwesome5 name="trash" size={14} color="#cc0000" style={{ marginRight: 6 }} />
+                  <Text style={styles.textDelete}>Deletar</Text>
                 </TouchableOpacity>
               </View>
             </View>
           ))
         ) : (
-          <Text>Nenhum tema encontrado</Text>
+          <Text style={styles.emptyText}>Nenhum tema encontrado</Text>
         )}
       </ScrollView>
 

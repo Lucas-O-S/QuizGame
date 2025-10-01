@@ -1,70 +1,131 @@
 import { StyleSheet } from "react-native";
-import BaseStyles from "./BaseStyles";
 import Colors from "./Colors";
 
-const styles = StyleSheet.create({
+const CreatorChooseScreenStyles = StyleSheet.create({
     container: {
-        ...BaseStyles.container,
-        padding: 20,
+        flex: 1,
+        backgroundColor: "transparent",
+        padding: 16,
+    },
+    scrollContainer: {
+        paddingBottom: 100,
     },
     title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        color: Colors.secondary,
-        alignSelf: "center",
-        marginBottom: 20,
-        fontFamily: "monospace",
-        textTransform: "uppercase",
+        fontSize: 26,
+        fontWeight: "700",
+        color: Colors.textPrimary,
+        marginBottom: 16,
+        marginTop: 50,
+        textAlign: "center",
     },
-    text: {
+    newThemeButton: {
+        backgroundColor: Colors.secondary,
+        paddingVertical: 14,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        alignItems: "center",
+        marginBottom: 30,
+        marginTop: 10,
+        shadowColor: Colors.secondary,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 6,
+        elevation: 3,
+        alignSelf: "center",
+        minWidth: 160,
+    },
+    newThemeButtonText: {
+        color: Colors.background,
+        fontSize: 16,
+        fontWeight: "600",
+        letterSpacing: 0.5,
+    },
+    themeCard: {
+        backgroundColor: Colors.surface,
+        borderRadius: 10,
+        padding: 16,
+        marginBottom: 12,
+        borderWidth: 1,
+        borderColor: Colors.border,
+        shadowColor: Colors.shadowColor,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    themeName: {
         fontSize: 18,
         color: Colors.textPrimary,
+        marginBottom: 12,
     },
-    textDelete: {
-        color: "#cc0000",
-        fontSize: 13,
-        textTransform: "uppercase",
-        fontWeight: "bold",
-    },
-    textRename: {
-        color: "#000766ff",
-        fontSize: 13,
-        textTransform: "uppercase",
-        
-    },
-    buttonText: {
-        color: "#5b7a9eff",
-        fontSize: 18,
+    buttonGroup: {
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     button: {
         flex: 1,
         paddingVertical: 10,
         borderRadius: 8,
         alignItems: "center",
+        justifyContent: "center",
         marginHorizontal: 5,
-    },
-    buttonDelete: {
-        backgroundColor: "#f7c1c1ff",
+        flexDirection: "row",
     },
     buttonRename: {
-        backgroundColor: "#ababebff",
+        backgroundColor: "#D6E4F0",
+        shadowColor: "#A3B9D2",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 3,
+        elevation: 2,
     },
-    themeItem: {
-        marginBottom: 20,
-        padding: 15,
-        borderWidth: 1,
-        borderColor: "#e4e4e4ff",
-        borderRadius: 10,
-        backgroundColor: "#e9e9e9ff",
+    buttonDelete: {
+        backgroundColor: "#F8D2D2",
+        shadowColor: "#D9A1A1",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 3,
+        elevation: 2,
     },
-    themeName: {
-        fontSize: 18,
-        marginBottom: 10,
+    textRename: {
+        color: "#2F486E",
+        fontSize: 14,
+        fontWeight: "600",
     },
-    buttonGroup: {
-        flexDirection: "row",
-        justifyContent: "space-between",
+    textDelete: {
+        color: "#B00020",
+        fontSize: 14,
+        fontWeight: "600",
+    },
+    emptyText: {
+        fontSize: 16,
+        color: Colors.textSecondary,
+        textAlign: "center",
+        marginTop: 40,
+    },
+    backgroundGrid: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: -1,
+        backgroundColor: Colors.background
+    },
+    horizontalLine: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        height: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+    },
+    verticalLine: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        width: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
     },
 });
 
-export default styles;
+export default CreatorChooseScreenStyles;
